@@ -1,0 +1,12 @@
+{
+  "version": "1.0.0",
+  "organization": "OWASP Security Best Practices",
+  "date": "2026-06-18",
+  "abstract": "This document provides comprehensive security guidelines based on the OWASP Top 10 (2021). It covers prevention patterns for common web application vulnerabilities including broken access control, cryptographic failures, injection attacks, insecure design, security misconfiguration, vulnerable components, authentication failures, data integrity failures, logging failures, and SSRF. Each section includes code examples showing incorrect and correct implementations.",
+  "references": [
+    "OWASP Top 10: https://owasp.org/Top10/",
+    "OWASP Cheat Sheets: https://cheatsheetseries.owasp.org/",
+    "Node.js Security: https://nodejs.org/en/docs/guides/security/",
+    "Snyk: https://snyk.io/"
+  ]
+}
