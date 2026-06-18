@@ -1,0 +1,111 @@
+name: Validate Skill
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate SKILL.md format
+        run: |
+          echo "Validating SKILL.md format..."
+          
+          # Check if SKILL.md exists
+          if [ ! -f "skills/owasp-security/SKILL.md" ]; then
+            echo "Error: SKILL.md not found"
+            exit 1
+          fi
+          
+          # Validate frontmatter
+          if ! grep -q "^---$" skills/owasp-security/SKILL.md; then
+            echo "Error: SKILL.md missing frontmatter"
+            exit 1
+          fi
+          
+          # Validate name field
+          if ! grep -q "^name:" skills/owasp-security/SKILL.md; then
+            echo "Error: SKILL.md missing name field"
+            exit 1
+          fi
+          
+          # Validate description field
+          if ! grep -q "^description:" skills/owasp-security/SKILL.md; then
+            echo "Error: SKILL.md missing description field"
+            exit 1
+          fi
+          
+          # Validate name matches folder name
+          SKILL_NAME=$(grep "^name:" skills/owasp-security/SKILL.md | sed 's/name: //' | xargs)
+          if [ "$SKILL_NAME" != "owasp-security" ]; then
+            echo "Error: name field '$SKILL_NAME' does not match folder name 'owasp-security'"
+            exit 1
+          fi
+          
+          echo "✓ SKILL.md format is valid"
+
+      - name: Validate skill structure
+        run: |
+          echo "Validating skill structure..."
+          
+          # Check if skill directory exists
+          if [ ! -d "skills/owasp-security" ]; then
+            echo "Error: skills/owasp-security directory not found"
+            exit 1
+          fi
+          
+          # Check if SKILL.md exists
+          if [ ! -f "skills/owasp-security/SKILL.md" ]; then
+            echo "Error: SKILL.md not found in skill directory"
+            exit 1
+          fi
+          
+          echo "✓ Skill structure is valid"
+
+      - name: Check for common issues
+        run: |
+          echo "Checking for common issues..."
+          
+          # Check for trailing whitespace
+          if grep -r "[[:space:]]$" skills/owasp-security/SKILL.md; then
+            echo "Warning: Trailing whitespace found in SKILL.md"
+          fi
+          
+          # Check for tabs
+          if grep -P "\t" skills/owasp-security/SKILL.md; then
+            echo "Warning: Tabs found in SKILL.md (use spaces)"
+          fi
+          
+          echo "✓ Common issues check complete"
+
+      - name: Validate description length
+        run: |
+          echo "Validating description length..."
+          
+          DESCRIPTION=$(grep "^description:" skills/owasp-security/SKILL.md | sed 's/description: //' | xargs)
+          LENGTH=${#DESCRIPTION}
+          
+          if [ $LENGTH -gt 1024 ]; then
+            echo "Error: Description too long ($LENGTH characters, max 1024)"
+            exit 1
+          fi
+          
+          if [ $LENGTH -lt 10 ]; then
+            echo "Error: Description too short ($LENGTH characters, min 10)"
+            exit 1
+          fi
+          
+          echo "✓ Description length is valid ($LENGTH characters)"
+
+      - name: Summary
+        run: |
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "✓ All validations passed!"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
