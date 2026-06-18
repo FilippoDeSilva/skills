@@ -72,34 +72,57 @@ mkdir -p "$HOME/.copilot/skills"
 mkdir -p "$HOME/.agents/skills"
 ok "Directories ready"
 
-# ─── install skill ───────────────────────────────────────────
-step "Installing owasp-security skill"
+# ─── install skills ───────────────────────────────────────────
+step "Installing skills"
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-SKILL_DIR="$SCRIPT_DIR/owasp-security"
+SKILLS_DIR="$SCRIPT_DIR"
 
-if [ ! -d "$SKILL_DIR" ]; then
-  err "owasp-security directory not found at $SKILL_DIR"
+if [ ! -d "$SKILLS_DIR" ]; then
+  err "Skills directory not found at $SKILLS_DIR"
   exit 1
 fi
 
-# Remove existing skill if present
-for dir in "$HOME/.claude/skills/owasp-security" "$HOME/.copilot/skills/owasp-security" "$HOME/.agents/skills/owasp-security"; do
-  if [ -d "$dir" ]; then
-    info "Removing existing $dir"
-    rm -rf "$dir"
+# Find all skill directories
+SKILLS=()
+for skill_dir in "$SKILLS_DIR"/*/; do
+  if [ -d "$skill_dir" ]; then
+    skill_name=$(basename "$skill_dir")
+    if [ -f "$skill_dir/SKILL.md" ]; then
+      SKILLS+=("$skill_name")
+    fi
   fi
 done
 
-# Copy skill to all skill directories
-cp -R "$SKILL_DIR" "$HOME/.claude/skills/"
-ok "owasp-security installed at ~/.claude/skills/owasp-security"
+if [ ${#SKILLS[@]} -eq 0 ]; then
+  err "No skills found with SKILL.md files"
+  exit 1
+fi
 
-cp -R "$SKILL_DIR" "$HOME/.copilot/skills/"
-ok "owasp-security installed at ~/.copilot/skills/owasp-security"
+ok "Found ${#SKILLS[@]} skill(s): ${SKILLS[*]}"
 
-cp -R "$SKILL_DIR" "$HOME/.agents/skills/"
-ok "owasp-security installed at ~/.agents/skills/owasp-security"
+# Install each skill
+for skill in "${SKILLS[@]}"; do
+  SKILL_DIR="$SKILLS_DIR/$skill"
+  
+  # Remove existing skill if present
+  for dir in "$HOME/.claude/skills/$skill" "$HOME/.copilot/skills/$skill" "$HOME/.agents/skills/$skill"; do
+    if [ -d "$dir" ]; then
+      info "Removing existing $dir"
+      rm -rf "$dir"
+    fi
+  done
+  
+  # Copy skill to all skill directories
+  cp -R "$SKILL_DIR" "$HOME/.claude/skills/"
+  ok "$skill installed at ~/.claude/skills/$skill"
+  
+  cp -R "$SKILL_DIR" "$HOME/.copilot/skills/"
+  ok "$skill installed at ~/.copilot/skills/$skill"
+  
+  cp -R "$SKILL_DIR" "$HOME/.agents/skills/"
+  ok "$skill installed at ~/.agents/skills/$skill"
+done
 
 # ─── outro ───────────────────────────────────────────────────
 printf "\n${GREEN}"
@@ -107,18 +130,18 @@ cat <<'EOF'
    ╭──────────────────────────────────────────╮
    │   ✓ Installation Complete!              │
    │                                          │
-   │   OWASP Security skill is now available  │
+   │   All skills are now available           │
    │   in your AI coding agent.               │
    ╰──────────────────────────────────────────╯
 EOF
 printf "${RST}\n"
 
-info "Skill locations:"
-info "  ~/.claude/skills/owasp-security"
-info "  ~/.copilot/skills/owasp-security"
-info "  ~/.agents/skills/owasp-security"
+info "Skills installed:"
+for skill in "${SKILLS[@]}"; do
+  info "  - $skill"
+done
 
 printf "\n${CYAN}Next steps:${RST}\n"
 info "1. Restart your AI coding agent"
-info "2. Type /skills to verify owasp-security appears"
-info "3. Ask about OWASP security to activate the skill\n"
+info "2. Type /skills to verify skills appear"
+info "3. Ask about any skill to activate it\n"

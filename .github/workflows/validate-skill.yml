@@ -1,4 +1,4 @@
-name: Validate Skill
+name: Validate Skills
 
 on:
   push:
@@ -10,86 +10,115 @@ on:
 jobs:
   validate:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        skill: ${{ steps.find-skills.outputs.skills }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Validate SKILL.md format
+      - name: Find all skills
+        id: find-skills
         run: |
-          echo "Validating SKILL.md format..."
+          if [ -d "skills" ]; then
+            SKILLS=$(find skills -maxdepth 1 -type d -not -path "skills" | xargs -I {} basename {} | tr '\n' ' ')
+            echo "skills=$SKILLS" >> $GITHUB_OUTPUT
+            echo "Found skills: $SKILLS"
+          else
+            echo "skills=" >> $GITHUB_OUTPUT
+            echo "No skills directory found"
+          fi
+
+      - name: Validate ${{ matrix.skill }}
+        if: matrix.skill != ''
+        run: |
+          SKILL="${{ matrix.skill }}"
+          SKILL_DIR="skills/$SKILL"
+          SKILL_FILE="$SKILL_DIR/SKILL.md"
           
-          # Check if SKILL.md exists
-          if [ ! -f "skills/owasp-security/SKILL.md" ]; then
-            echo "Error: SKILL.md not found"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "Validating skill: $SKILL"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          
+          # Check if skill directory exists
+          if [ ! -d "$SKILL_DIR" ]; then
+            echo "Error: $SKILL_DIR not found"
             exit 1
           fi
           
+          # Check if SKILL.md exists
+          if [ ! -f "$SKILL_FILE" ]; then
+            echo "Error: SKILL.md not found in $SKILL_DIR"
+            exit 1
+          fi
+          
+          echo "✓ Skill directory exists"
+          echo "✓ SKILL.md exists"
+
+      - name: Validate SKILL.md format for ${{ matrix.skill }}
+        if: matrix.skill != ''
+        run: |
+          SKILL="${{ matrix.skill }}"
+          SKILL_FILE="skills/$SKILL/SKILL.md"
+          
+          echo "Validating SKILL.md format..."
+          
           # Validate frontmatter
-          if ! grep -q "^---$" skills/owasp-security/SKILL.md; then
+          if ! grep -q "^---$" "$SKILL_FILE"; then
             echo "Error: SKILL.md missing frontmatter"
             exit 1
           fi
           
           # Validate name field
-          if ! grep -q "^name:" skills/owasp-security/SKILL.md; then
+          if ! grep -q "^name:" "$SKILL_FILE"; then
             echo "Error: SKILL.md missing name field"
             exit 1
           fi
           
           # Validate description field
-          if ! grep -q "^description:" skills/owasp-security/SKILL.md; then
+          if ! grep -q "^description:" "$SKILL_FILE"; then
             echo "Error: SKILL.md missing description field"
             exit 1
           fi
           
           # Validate name matches folder name
-          SKILL_NAME=$(grep "^name:" skills/owasp-security/SKILL.md | sed 's/name: //' | xargs)
-          if [ "$SKILL_NAME" != "owasp-security" ]; then
-            echo "Error: name field '$SKILL_NAME' does not match folder name 'owasp-security'"
+          SKILL_NAME=$(grep "^name:" "$SKILL_FILE" | sed 's/name: //' | xargs)
+          if [ "$SKILL_NAME" != "$SKILL" ]; then
+            echo "Error: name field '$SKILL_NAME' does not match folder name '$SKILL'"
             exit 1
           fi
           
           echo "✓ SKILL.md format is valid"
 
-      - name: Validate skill structure
+      - name: Check for common issues in ${{ matrix.skill }}
+        if: matrix.skill != ''
         run: |
-          echo "Validating skill structure..."
+          SKILL="${{ matrix.skill }}"
+          SKILL_FILE="skills/$SKILL/SKILL.md"
           
-          # Check if skill directory exists
-          if [ ! -d "skills/owasp-security" ]; then
-            echo "Error: skills/owasp-security directory not found"
-            exit 1
-          fi
-          
-          # Check if SKILL.md exists
-          if [ ! -f "skills/owasp-security/SKILL.md" ]; then
-            echo "Error: SKILL.md not found in skill directory"
-            exit 1
-          fi
-          
-          echo "✓ Skill structure is valid"
-
-      - name: Check for common issues
-        run: |
           echo "Checking for common issues..."
           
           # Check for trailing whitespace
-          if grep -r "[[:space:]]$" skills/owasp-security/SKILL.md; then
+          if grep -q "[[:space:]]$" "$SKILL_FILE"; then
             echo "Warning: Trailing whitespace found in SKILL.md"
           fi
           
           # Check for tabs
-          if grep -P "\t" skills/owasp-security/SKILL.md; then
+          if grep -q $'\t' "$SKILL_FILE"; then
             echo "Warning: Tabs found in SKILL.md (use spaces)"
           fi
           
           echo "✓ Common issues check complete"
 
-      - name: Validate description length
+      - name: Validate description length for ${{ matrix.skill }}
+        if: matrix.skill != ''
         run: |
+          SKILL="${{ matrix.skill }}"
+          SKILL_FILE="skills/$SKILL/SKILL.md"
+          
           echo "Validating description length..."
           
-          DESCRIPTION=$(grep "^description:" skills/owasp-security/SKILL.md | sed 's/description: //' | xargs)
+          DESCRIPTION=$(grep "^description:" "$SKILL_FILE" | sed 's/description: //' | xargs)
           LENGTH=${#DESCRIPTION}
           
           if [ $LENGTH -gt 1024 ]; then
@@ -104,8 +133,36 @@ jobs:
           
           echo "✓ Description length is valid ($LENGTH characters)"
 
+      - name: Validate name format for ${{ matrix.skill }}
+        if: matrix.skill != ''
+        run: |
+          SKILL="${{ matrix.skill }}"
+          
+          echo "Validating name format..."
+          
+          # Check name is lowercase alphanumeric with hyphens
+          if ! echo "$SKILL" | grep -qE '^[a-z0-9]+(-[a-z0-9]+)*$'; then
+            echo "Error: Skill name '$SKILL' must be lowercase alphanumeric with hyphens only"
+            exit 1
+          fi
+          
+          # Check no consecutive hyphens
+          if echo "$SKILL" | grep -q '--'; then
+            echo "Error: Skill name '$SKILL' must not contain consecutive hyphens"
+            exit 1
+          fi
+          
+          # Check doesn't start or end with hyphen
+          if echo "$SKILL" | grep -qE '^-|-$'; then
+            echo "Error: Skill name '$SKILL' must not start or end with hyphen"
+            exit 1
+          fi
+          
+          echo "✓ Name format is valid"
+
       - name: Summary
+        if: matrix.skill != ''
         run: |
           echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-          echo "✓ All validations passed!"
+          echo "✓ All validations passed for ${{ matrix.skill }}!"
           echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
