@@ -7,7 +7,6 @@ tags:
   - owasp
   - apisec
   - nestjs
-  - apisec
 ---
 
 # OWASP Top 10 Security

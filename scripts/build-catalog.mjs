@@ -34,8 +34,8 @@ for (const folder of skillFolders) {
 
   const content = fs.readFileSync(filePath, "utf-8");
 
-  // extract YAML frontmatter
-  const match = content.match(/^---([\s\S]*?)---/);
+  // extract YAML frontmatter (handle potential BOM)
+  const match = content.replace(/^﻿/, '').match(/^---([\s\S]*?)---/);
 
   if (!match) {
     console.error(`❌ Missing frontmatter in ${folder}`);
