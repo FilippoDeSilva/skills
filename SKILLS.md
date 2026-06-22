@@ -2,5 +2,5 @@
 
 | Skill | Version | Author | Description |
 |-------|---------|---------|-------------|
-| effoy-backend | 1.0.0 | FilippoDeSilva | Comprehensive guide for the Effoy Core System - a NestJS wedding management application. |
-| owasp-security | 1.0.0 | FilippoDeSilva | Implement secure coding practices following OWASP Top 10. Use when preventing security vulnerabilities. |
+| effoy-backend | 1.0.0 | FilippoDeSilva | Comprehensive guide for the Effoy Core System - a NestJS wedding management appl |
+| owasp-security | 1.0.0 | FilippoDeSilva | Implement secure coding practices following OWASP Top 10. Use when preventing se |
