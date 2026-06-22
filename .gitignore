@@ -1,2 +1,4 @@
+# distribution files
 dist/
+# node modules
 node_modules/
