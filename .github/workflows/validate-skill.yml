@@ -33,6 +33,7 @@ jobs:
           echo "skills=$SKILLS" >> $GITHUB_OUTPUT
           echo "Found skills: $SKILLS"
 
+
   validate:
     needs: find-skills
     runs-on: ubuntu-latest
@@ -83,7 +84,6 @@ jobs:
           DESC=$(yq '.description' meta.yaml)
           VERSION=$(yq '.version' meta.yaml)
           AUTHOR=$(yq '.author' meta.yaml)
-          TAGS=$(yq '.tags' meta.yaml)
 
           # Required fields
           if [ -z "$NAME" ] || [ "$NAME" == "null" ]; then
@@ -102,13 +102,14 @@ jobs:
             exit 1
           fi
 
-          # Version check (semver basic)
+          # Version check (semver)
           if ! echo "$VERSION" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+$'; then
             echo "❌ invalid version (must be semver)"
             exit 1
           fi
 
           echo "✓ schema valid"
+
 
       - name: Validate tags format
         run: |
@@ -126,14 +127,17 @@ jobs:
 
           echo "✓ tags valid"
 
+
       - name: Check README (optional)
         run: |
           SKILL="${{ matrix.skill }}"
+
           if [ ! -f "skills/$SKILL/README.md" ]; then
             echo "⚠️ README.md missing (optional)"
           else
             echo "✓ README exists"
           fi
+
 
   build-catalog:
     needs: validate
@@ -143,49 +147,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup yq + jq
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y jq
-          wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq
-          chmod +x /usr/bin/yq
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
 
-      - name: Generate skills catalog
-        run: |
-          mkdir -p dist
+      - name: Install dependencies
+        run: npm install ajv
 
-          echo "[]" > dist/skills.index.json
-
-          for dir in skills/*; do
-            if [ -d "$dir" ]; then
-
-              FILE="$dir/SKILL.md"
-
-              NAME=$(yq '.name' "$FILE")
-              DESC=$(yq '.description' "$FILE")
-              VERSION=$(yq '.version' "$FILE")
-              AUTHOR=$(yq '.author' "$FILE")
-              TAGS=$(yq '.tags' "$FILE" | jq -c '. // []')
-
-              jq --arg name "$NAME" \
-                 --arg desc "$DESC" \
-                 --arg version "$VERSION" \
-                 --arg author "$AUTHOR" \
-                 --argjson tags "$TAGS" \
-                 '. += [{
-                    name: $name,
-                    description: $desc,
-                    version: $version,
-                    author: $author,
-                    tags: $tags
-                 }]' dist/skills.index.json > tmp.json
-
-              mv tmp.json dist/skills.index.json
-            fi
-          done
-
-          echo "Generated catalog:"
-          cat dist/skills.index.json
+      - name: Build skills catalog
+        run: node scripts/build-catalog.mjs
 
       - name: Upload catalog artifact
         uses: actions/upload-artifact@v4
