@@ -23,55 +23,55 @@ This is a NestJS-based wedding management system with PostgreSQL (Prisma ORM), R
 
 ```
 effoy-core-system/
-â”œâ”€â”€ src/
-â”‚   â”œâ”€â”€ api/                    # API modules (feature-based)
-â”‚   â”‚   â”œâ”€â”€ auth/              # Authentication module
-â”‚   â”‚   â”œâ”€â”€ health/            # Health check endpoints
-â”‚   â”‚   â”œâ”€â”€ home/              # Home controller
-â”‚   â”‚   â”œâ”€â”€ invoice/           # Invoice management
-â”‚   â”‚   â”œâ”€â”€ notification/      # Notification system
-â”‚   â”‚   â”œâ”€â”€ payment/           # Payment processing
-â”‚   â”‚   â”œâ”€â”€ post/              # Post/blog functionality
-â”‚   â”‚   â”œâ”€â”€ user/              # User management
-â”‚   â”‚   â””â”€â”€ wedding/           # Wedding-related features
-â”‚   â”œâ”€â”€ background/            # Background job processing
-â”‚   â”‚   â””â”€â”€ queues/            # BullMQ queues
-â”‚   â”‚       â”œâ”€â”€ email-queue/   # Email verification jobs
-â”‚   â”‚       â””â”€â”€ notification-queue/ # Notification jobs
-â”‚   â”œâ”€â”€ common/                # Shared/common code
-â”‚   â”‚   â”œâ”€â”€ config/            # Common configurations
-â”‚   â”‚   â”œâ”€â”€ dto/               # Common DTOs
-â”‚   â”‚   â”œâ”€â”€ interfaces/        # Common interfaces
-â”‚   â”‚   â”œâ”€â”€ types/             # Common types
-â”‚   â”‚   â””â”€â”€ utils/             # Common utilities
-â”‚   â”œâ”€â”€ config/                # Centralized configuration
-â”‚   â”‚   â”œâ”€â”€ app/               # App configuration
-â”‚   â”‚   â”œâ”€â”€ auth/              # Auth configuration
-â”‚   â”‚   â”œâ”€â”€ database/          # Database configuration
-â”‚   â”‚   â”œâ”€â”€ mail/              # Mail configuration
-â”‚   â”‚   â”œâ”€â”€ redis/             # Redis configuration
-â”‚   â”‚   â”œâ”€â”€ bull-queue/        # BullMQ configuration
-â”‚   â”‚   â””â”€â”€ config.type.ts     # Main config type
-â”‚   â”œâ”€â”€ constants/             # Application constants
-â”‚   â”œâ”€â”€ decorators/            # Custom decorators
-â”‚   â”œâ”€â”€ exceptions/            # Custom exceptions
-â”‚   â”œâ”€â”€ filters/               # Global filters
-â”‚   â”œâ”€â”€ guards/                # Auth/authorization guards
-â”‚   â”œâ”€â”€ i18n/                  # Internationalization
-â”‚   â”œâ”€â”€ libs/                  # External library integrations
-â”‚   â”‚   â”œâ”€â”€ aws/               # AWS services
-â”‚   â”‚   â””â”€â”€ gcp/               # GCP services
-â”‚   â”œâ”€â”€ mail/                  # Mail service
-â”‚   â”œâ”€â”€ prisma/                # Prisma ORM service
-â”‚   â”œâ”€â”€ sms/                   # SMS service (Twilio)
-â”‚   â”œâ”€â”€ utils/                 # Utility functions
-â”‚   â”œâ”€â”€ app.module.ts          # Root module
-â”‚   â””â”€â”€ main.ts                # Application bootstrap
-â”œâ”€â”€ prisma/                    # Prisma schema and migrations
-â”œâ”€â”€ test/                      # E2E tests
-â”œâ”€â”€ docs/                      # Documentation
-â”œâ”€â”€ skills/                    # Project-specific skills
-â””â”€â”€ package.json               # Dependencies
+├── src/
+│   ├── api/                    # API modules (feature-based)
+│   │   ├── auth/              # Authentication module
+│   │   ├── health/            # Health check endpoints
+│   │   ├── home/              # Home controller
+│   │   ├── invoice/           # Invoice management
+│   │   ├── notification/      # Notification system
+│   │   ├── payment/           # Payment processing
+│   │   ├── post/              # Post/blog functionality
+│   │   ├── user/              # User management
+│   │   └── wedding/           # Wedding-related features
+│   ├── background/            # Background job processing
+│   │   └── queues/            # BullMQ queues
+│   │       ├── email-queue/   # Email verification jobs
+│   │       └── notification-queue/ # Notification jobs
+│   ├── common/                # Shared/common code
+│   │   ├── config/            # Common configurations
+│   │   ├── dto/               # Common DTOs
+│   │   ├── interfaces/        # Common interfaces
+│   │   ├── types/             # Common types
+│   │   └── utils/             # Common utilities
+│   ├── config/                # Centralized configuration
+│   │   ├── app/               # App configuration
+│   │   ├── auth/              # Auth configuration
+│   │   ├── database/          # Database configuration
+│   │   ├── mail/              # Mail configuration
+│   │   ├── redis/             # Redis configuration
+│   │   ├── bull-queue/        # BullMQ configuration
+│   │   └── config.type.ts     # Main config type
+│   ├── constants/             # Application constants
+│   ├── decorators/            # Custom decorators
+│   ├── exceptions/            # Custom exceptions
+│   ├── filters/               # Global filters
+│   ├── guards/                # Auth/authorization guards
+│   ├── i18n/                  # Internationalization
+│   ├── libs/                  # External library integrations
+│   │   ├── aws/               # AWS services
+│   │   └── gcp/               # GCP services
+│   ├── mail/                  # Mail service
+│   ├── prisma/                # Prisma ORM service
+│   ├── sms/                   # SMS service (Twilio)
+│   ├── utils/                 # Utility functions
+│   ├── app.module.ts          # Root module
+│   └── main.ts                # Application bootstrap
+├── prisma/                    # Prisma schema and migrations
+├── test/                      # E2E tests
+├── docs/                      # Documentation
+├── skills/                    # Project-specific skills
+└── package.json               # Dependencies
 ```
 
 ## Configuration Structure
@@ -81,28 +81,28 @@ All configuration files are located in `src/config/` with feature-based subfolde
 
 ```
 src/config/
-â”œâ”€â”€ app/
-â”‚   â”œâ”€â”€ app.config.ts          # App-level config (port, env, cors, etc.)
-â”‚   â”œâ”€â”€ app-config.type.ts     # App config type definition
-â”‚   â””â”€â”€ app-config.spec.ts     # App config tests
-â”œâ”€â”€ auth/
-â”‚   â”œâ”€â”€ auth.config.ts         # JWT and auth config
-â”‚   â”œâ”€â”€ auth-config.type.ts    # Auth config type definition
-â”‚   â””â”€â”€ auth-config.spec.ts    # Auth config tests
-â”œâ”€â”€ database/
-â”‚   â”œâ”€â”€ database.config.ts     # Database connection config
-â”‚   â”œâ”€â”€ database-config.type.ts # Database config type definition
-â”‚   â””â”€â”€ database-config.spec.ts # Database config tests
-â”œâ”€â”€ mail/
-â”‚   â”œâ”€â”€ mail.config.ts         # Mailer configuration
-â”‚   â”œâ”€â”€ mail-config.type.ts    # Mail config type definition
-â”‚   â””â”€â”€ mail-config.spec.ts    # Mail config tests
-â”œâ”€â”€ redis/
-â”‚   â”œâ”€â”€ redis.config.ts        # Redis connection config
-â”‚   â””â”€â”€ redis-config.type.ts    # Redis config type definition
-â”œâ”€â”€ bull-queue/
-â”‚   â””â”€â”€ bull-queue.config.ts    # BullMQ queue configurations
-â””â”€â”€ config.type.ts             # Main config type (AllConfigType)
+├── app/
+│   ├── app.config.ts          # App-level config (port, env, cors, etc.)
+│   ├── app-config.type.ts     # App config type definition
+│   └── app-config.spec.ts     # App config tests
+├── auth/
+│   ├── auth.config.ts         # JWT and auth config
+│   ├── auth-config.type.ts    # Auth config type definition
+│   └── auth-config.spec.ts    # Auth config tests
+├── database/
+│   ├── database.config.ts     # Database connection config
+│   ├── database-config.type.ts # Database config type definition
+│   └── database-config.spec.ts # Database config tests
+├── mail/
+│   ├── mail.config.ts         # Mailer configuration
+│   ├── mail-config.type.ts    # Mail config type definition
+│   └── mail-config.spec.ts    # Mail config tests
+├── redis/
+│   ├── redis.config.ts        # Redis connection config
+│   └── redis-config.type.ts    # Redis config type definition
+├── bull-queue/
+│   └── bull-queue.config.ts    # BullMQ queue configurations
+└── config.type.ts             # Main config type (AllConfigType)
 ```
 
 ### Configuration Access Pattern
@@ -262,29 +262,29 @@ Thequeue system has been refactored with a resilient, secure, and scalable archi
 Directory Structure:**
 ```
 src/background/queues/
-â”œâ”€â”€ base/                      # Base classes and utilities
-â”‚   â”œâ”€â”€ base-queue-processor.ts # Abstract processor with common functionality
-â”‚   â”œâ”€â”€ base-queue-service.ts   # Abstract service with validation/encryption
-â”‚   â”œâ”€â”€ circuit-breaker.util.ts  # Circuit breaker for external services
-â”‚   â”œâ”€â”€ graceful-shutdown.util.ts # Graceful shutdown handling
-â”‚   â”œâ”€â”€ job-dependencies.util.ts # Job chaining and dependencies
-â”‚   â”œâ”€â”€ scheduled-jobs.util.ts   # Cron-like scheduled jobs
-â”‚   â””â”€â”€ index.ts                # Barrel exports
-â”œâ”€â”€ email-queue/               # Email verification jobs
-â”‚   â”œâ”€â”€ email-queue.service.ts
-â”‚   â”œâ”€â”€ email.processor.ts
-â”‚   â””â”€â”€ email-queue.module.ts
-â”œâ”€â”€ notification-queue/        # Notification jobs
-â”‚   â”œâ”€â”€ notification-queue.service.ts
-â”‚   â”œâ”€â”€ notification.processor.ts
-â”‚   â””â”€â”€ notification-queue.module.ts
-â”œâ”€â”€ health/                    # Queue health monitoring
-â”‚   â””â”€â”€ queue-health.controller.ts
-â”œâ”€â”€ metrics/                  # Queue metrics collection
-â”‚   â””â”€â”€ queue-metrics.service.ts
-â””â”€â”€ validation/                # Job data validation schemas
-    â”œâ”€â”€ email-job.validation.ts
-    â””â”€â”€ notification-job.validation.ts
+├── base/                      # Base classes and utilities
+│   ├── base-queue-processor.ts # Abstract processor with common functionality
+│   ├── base-queue-service.ts   # Abstract service with validation/encryption
+│   ├── circuit-breaker.util.ts  # Circuit breaker for external services
+│   ├── graceful-shutdown.util.ts # Graceful shutdown handling
+│   ├── job-dependencies.util.ts # Job chaining and dependencies
+│   ├── scheduled-jobs.util.ts   # Cron-like scheduled jobs
+│   └── index.ts                # Barrel exports
+├── email-queue/               # Email verification jobs
+│   ├── email-queue.service.ts
+│   ├── email.processor.ts
+│   └── email-queue.module.ts
+├── notification-queue/        # Notification jobs
+│   ├── notification-queue.service.ts
+│   ├── notification.processor.ts
+│   └── notification-queue.module.ts
+├── health/                    # Queue health monitoring
+│   └── queue-health.controller.ts
+├── metrics/                  # Queue metrics collection
+│   └── queue-metrics.service.ts
+└── validation/                # Job data validation schemas
+    ├── email-job.validation.ts
+    └── notification-job.validation.ts
 ```
 
 **Base Classes:**
@@ -477,15 +477,15 @@ src/background/queues/
 **Standard Module Pattern**:
 ```
 feature/
-â”œâ”€â”€ dto/                      # Data Transfer Objects
-â”‚   â”œâ”€â”€ create-feature.req.dto.ts
-â”‚   â”œâ”€â”€ update-feature.req.dto.ts
-â”‚   â””â”€â”€ feature.res.dto.ts
-â”œâ”€â”€ feature.controller.ts     # HTTP endpoints
-â”œâ”€â”€ feature.service.ts        # Business logic
-â”œâ”€â”€ feature.module.ts         # Module definition
-â””â”€â”€ __tests__/                # Module tests
-    â””â”€â”€ feature.service.spec.ts
+├── dto/                      # Data Transfer Objects
+│   ├── create-feature.req.dto.ts
+│   ├── update-feature.req.dto.ts
+│   └── feature.res.dto.ts
+├── feature.controller.ts     # HTTP endpoints
+├── feature.service.ts        # Business logic
+├── feature.module.ts         # Module definition
+└── __tests__/                # Module tests
+    └── feature.service.spec.ts
 ```
 
 **Service Pattern**:
@@ -567,23 +567,23 @@ feature/
 ### Step 1: Create Module Structure
 ```bash
 src/api/new-feature/
-â”œâ”€â”€ dto/
-â”‚   â”œâ”€â”€ create-new-feature.req.dto.ts
-â”‚   â”œâ”€â”€ update-new-feature.req.dto.ts
-â”‚   â””â”€â”€ new-feature.res.dto.ts
-â”œâ”€â”€ new-feature.controller.ts
-â”œâ”€â”€ new-feature.service.ts
-â”œâ”€â”€ new-feature.module.ts
-â””â”€â”€ __tests__/
-    â””â”€â”€ new-feature.service.spec.ts
+├── dto/
+│   ├── create-new-feature.req.dto.ts
+│   ├── update-new-feature.req.dto.ts
+│   └── new-feature.res.dto.ts
+├── new-feature.controller.ts
+├── new-feature.service.ts
+├── new-feature.module.ts
+└── __tests__/
+    └── new-feature.service.spec.ts
 ```
 
 ### Step 2: Add Configuration (if needed)
 ```bash
 src/config/new-feature/
-â”œâ”€â”€ new-feature.config.ts
-â”œâ”€â”€ new-feature-config.type.ts
-â””â”€â”€ new-feature-config.spec.ts
+├── new-feature.config.ts
+├── new-feature-config.type.ts
+└── new-feature-config.spec.ts
 ```
 
 Update `src/config/config.type.ts` to include new config type.
