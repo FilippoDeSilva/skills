@@ -47,28 +47,45 @@ for (const folder of skillFolders) {
   // minimal YAML parser (safe subset)
   const parseYaml = (str) => {
     const obj = {};
-    str.split("\n").forEach((line) => {
+    const lines = str.split("\n");
+
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
       const [key, ...rest] = line.split(":");
-      if (!key || !rest.length) return;
-      obj[key.trim()] = rest.join(":").trim();
-    });
+      if (!key || !rest.length) continue;
+
+      const k = key.trim();
+      let v = rest.join(":").trim();
+
+      // Handle multiline lists (tags:)
+      if (k === "tags" && v === "") {
+        const tags = [];
+        let j = i + 1;
+        while (j < lines.length && lines[j].match(/^\s+-\s+/)) {
+          const tag = lines[j].replace(/^\s+-\s+/, "").trim();
+          if (tag) tags.push(tag);
+          j++;
+        }
+        obj[k] = tags;
+        i = j - 1;
+        continue;
+      }
+
+      // Handle inline arrays: [a, b, c]
+      if (v.startsWith("[")) {
+        obj[k] = v
+          .replace(/[\[\]]/g, "")
+          .split(",")
+          .map((t) => t.trim())
+          .filter(Boolean);
+      } else {
+        obj[k] = v.replace(/['"]/g, "");
+      }
+    }
     return obj;
   };
 
   const meta = parseYaml(yaml);
-
-  meta.name = meta.name?.replace(/['"]/g, "");
-  meta.version = meta.version?.replace(/['"]/g, "");
-  meta.author = meta.author?.replace(/['"]/g, "");
-
-  // parse tags safely
-  if (typeof meta.tags === "string") {
-    meta.tags = meta.tags
-      .replace(/[\[\]]/g, "")
-      .split(",")
-      .map((t) => t.trim())
-      .filter(Boolean);
-  }
 
   // validate schema
   const valid = validate(meta);
