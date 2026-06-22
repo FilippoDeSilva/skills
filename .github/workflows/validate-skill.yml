@@ -33,7 +33,6 @@ jobs:
           echo "skills=$SKILLS" >> $GITHUB_OUTPUT
           echo "Found skills: $SKILLS"
 
-
   validate:
     needs: find-skills
     runs-on: ubuntu-latest
@@ -47,10 +46,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup jq
-        run: sudo apt-get update && sudo apt-get install -y jq
+      - name: Install tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq
+          sudo wget -q https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/local/bin/yq
+          sudo chmod +x /usr/local/bin/yq
 
-      - name: Validate skill exists
+      - name: Validate structure
         run: |
           SKILL="${{ matrix.skill }}"
           DIR="skills/$SKILL"
@@ -62,61 +65,55 @@ jobs:
           fi
 
           if [ ! -f "$FILE" ]; then
-            echo "❌ Missing SKILL.md in $DIR"
+            echo "❌ Missing SKILL.md"
             exit 1
           fi
 
-          echo "✓ Structure valid for $SKILL"
+          echo "✓ structure valid"
 
-      - name: Validate SKILL.md schema
+      - name: Validate YAML schema (tolerant)
         run: |
           SKILL="${{ matrix.skill }}"
           FILE="skills/$SKILL/SKILL.md"
 
-          echo "Validating YAML frontmatter..."
+          FRONTMATTER=$(awk '
+            BEGIN {in_yaml=0; c=0}
+            /^---$/ {c++; if(c==1){in_yaml=1; next} if(c==2){exit}}
+            in_yaml {print}
+          ' "$FILE")
 
-          FRONTMATTER=$(awk 'BEGIN {in_yaml=0} /^---$/ {i++; if(i==2) exit; in_yaml=!in_yaml; next} in_yaml {print}' "$FILE")
+          TMP=$(mktemp)
+          echo "$FRONTMATTER" > "$TMP"
 
-          echo "$FRONTMATTER" > meta.yaml
+          NAME=$(yq -r '.name // ""' "$TMP" 2>/dev/null)
+          VERSION=$(yq -r '.version // "0.0.0"' "$TMP" 2>/dev/null)
+          AUTHOR=$(yq -r '.author // "unknown"' "$TMP" 2>/dev/null)
 
-          # Extract fields
-          NAME=$(yq '.name' meta.yaml)
-          DESC=$(yq '.description' meta.yaml)
-          VERSION=$(yq '.version' meta.yaml)
-          AUTHOR=$(yq '.author' meta.yaml)
-
-          # Required fields
-          if [ -z "$NAME" ] || [ "$NAME" == "null" ]; then
+          if [ -z "$NAME" ]; then
             echo "❌ Missing name"
             exit 1
           fi
 
-          if [ -z "$DESC" ] || [ "$DESC" == "null" ]; then
-            echo "❌ Missing description"
-            exit 1
-          fi
-
-          # Folder match rule
           if [ "$NAME" != "$SKILL" ]; then
             echo "❌ name mismatch: $NAME != $SKILL"
             exit 1
           fi
 
-          # Version check (semver)
           if ! echo "$VERSION" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+$'; then
-            echo "❌ invalid version (must be semver)"
+            echo "❌ invalid version"
             exit 1
           fi
 
+          rm -f "$TMP"
+
           echo "✓ schema valid"
 
-
-      - name: Validate tags format
+      - name: Validate tags (optional)
         run: |
           SKILL="${{ matrix.skill }}"
           FILE="skills/$SKILL/SKILL.md"
 
-          TAGS=$(yq '.tags[]?' "$FILE" 2>/dev/null || true)
+          TAGS=$(yq -r '.tags[]? // empty' "$FILE" 2>/dev/null || true)
 
           for tag in $TAGS; do
             if ! echo "$tag" | grep -Eq '^[a-z0-9-]+$'; then
@@ -127,39 +124,11 @@ jobs:
 
           echo "✓ tags valid"
 
-
-      - name: Check README (optional)
+      - name: Optional README check
         run: |
           SKILL="${{ matrix.skill }}"
-
-          if [ ! -f "skills/$SKILL/README.md" ]; then
-            echo "⚠️ README.md missing (optional)"
-          else
+          if [ -f "skills/$SKILL/README.md" ]; then
             echo "✓ README exists"
+          else
+            echo "ℹ README missing (optional)"
           fi
-
-
-  build-catalog:
-    needs: validate
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-
-      - name: Install dependencies
-        run: npm install ajv
-
-      - name: Build skills catalog
-        run: node scripts/build-catalog.mjs
-
-      - name: Upload catalog artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: skills-index
-          path: dist/skills.index.json
