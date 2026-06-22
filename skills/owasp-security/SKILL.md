@@ -1,4 +1,4 @@
-﻿---
+---
 name: owasp-security
 description: Implement secure coding practices following OWASP Top 10. Use when preventing security vulnerabilities, implementing authentication, securing APIs, or conducting security reviews. Triggers on OWASP, security, XSS, SQL injection, CSRF, authentication security, secure coding, vulnerability.
 version: 1.0.0
