@@ -2,9 +2,11 @@ name: Validate Skills
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
   pull_request:
-    branches: [main]
+    branches:
+      - main
   workflow_dispatch:
 
 jobs:
@@ -15,167 +17,156 @@ jobs:
       skills: ${{ steps.find-skills.outputs.skills }}
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Find all skills
         id: find-skills
         run: |
-          if [ -d "skills" ]; then
-            SKILLS=$(find skills -mindepth 1 -maxdepth 1 -type d \
-              | xargs -n1 basename \
-              | jq -R . \
-              | jq -s -c .)
-
-            echo "skills=$SKILLS" >> $GITHUB_OUTPUT
-            echo "Found skills: $SKILLS"
-          else
+          if [ ! -d "skills" ]; then
             echo 'skills=[]' >> $GITHUB_OUTPUT
-            echo "No skills directory found"
+            exit 0
           fi
+
+          SKILLS=$(find skills -mindepth 1 -maxdepth 1 -type d \
+            | xargs -n1 basename \
+            | jq -R . \
+            | jq -s -c .)
+
+          echo "skills=$SKILLS" >> $GITHUB_OUTPUT
+
+          echo "Found skills:"
+          echo "$SKILLS"
 
   validate:
     needs: find-skills
 
+    if: ${{ needs.find-skills.outputs.skills != '[]' }}
+
     runs-on: ubuntu-latest
 
     strategy:
+      fail-fast: false
       matrix:
         skill: ${{ fromJson(needs.find-skills.outputs.skills) }}
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Validate ${{ matrix.skill }}
+      - name: Install yq
+        run: |
+          sudo wget -q \
+            https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 \
+            -O /usr/local/bin/yq
+
+          sudo chmod +x /usr/local/bin/yq
+
+      - name: Validate skill
         run: |
           SKILL="${{ matrix.skill }}"
-          SKILL_DIR="skills/$SKILL"
-          SKILL_FILE="$SKILL_DIR/SKILL.md"
+          DIR="skills/$SKILL"
+          FILE="$DIR/SKILL.md"
 
-          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-          echo "Validating skill: $SKILL"
-          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "Validating $SKILL"
 
-          # Check if skill directory exists
-          if [ ! -d "$SKILL_DIR" ]; then
-            echo "Error: $SKILL_DIR not found"
+          test -d "$DIR" || {
+            echo "Directory missing"
             exit 1
-          fi
+          }
 
-          # Check if SKILL.md exists
-          if [ ! -f "$SKILL_FILE" ]; then
-            echo "Error: SKILL.md not found in $SKILL_DIR"
+          test -f "$FILE" || {
+            echo "SKILL.md missing"
             exit 1
-          fi
+          }
 
-          echo "✓ Skill directory exists"
-          echo "✓ SKILL.md exists"
+          test -f "$DIR/README.md" || {
+            echo "README.md missing"
+            exit 1
+          }
 
-      - name: Validate SKILL.md format for ${{ matrix.skill }}
+      - name: Validate frontmatter
         run: |
-          SKILL="${{ matrix.skill }}"
-          SKILL_FILE="skills/$SKILL/SKILL.md"
+          FILE="skills/${{ matrix.skill }}/SKILL.md"
 
-          echo "Validating SKILL.md format..."
+          NAME=$(yq '.name' "$FILE")
+          DESCRIPTION=$(yq '.description' "$FILE")
+          VERSION=$(yq '.version' "$FILE")
+          AUTHOR=$(yq '.author' "$FILE")
+          TAGS=$(yq '.tags' "$FILE")
 
-          # Validate frontmatter
-          if ! grep -q "^---$" "$SKILL_FILE"; then
-            echo "Error: SKILL.md missing frontmatter"
+          [ "$NAME" != "null" ] || {
+            echo "name missing"
             exit 1
-          fi
+          }
 
-          # Validate name field
-          if ! grep -q "^name:" "$SKILL_FILE"; then
-            echo "Error: SKILL.md missing name field"
+          [ "$DESCRIPTION" != "null" ] || {
+            echo "description missing"
             exit 1
-          fi
+          }
 
-          # Validate description field
-          if ! grep -q "^description:" "$SKILL_FILE"; then
-            echo "Error: SKILL.md missing description field"
+          [ "$VERSION" != "null" ] || {
+            echo "version missing"
             exit 1
-          fi
+          }
 
-          # Validate name matches folder name
-          SKILL_NAME=$(grep "^name:" "$SKILL_FILE" | sed 's/name: //' | xargs)
-
-          if [ "$SKILL_NAME" != "$SKILL" ]; then
-            echo "Error: name field '$SKILL_NAME' does not match folder name '$SKILL'"
+          [ "$AUTHOR" != "null" ] || {
+            echo "author missing"
             exit 1
-          fi
+          }
 
-          echo "✓ SKILL.md format is valid"
+          [ "$TAGS" != "null" ] || {
+            echo "tags missing"
+            exit 1
+          }
 
-      - name: Check for common issues in ${{ matrix.skill }}
+      - name: Validate description length
         run: |
-          SKILL="${{ matrix.skill }}"
-          SKILL_FILE="skills/$SKILL/SKILL.md"
+          FILE="skills/${{ matrix.skill }}/SKILL.md"
 
-          echo "Checking for common issues..."
+          DESCRIPTION=$(yq '.description' "$FILE")
 
-          # Check for trailing whitespace
-          if grep -q "[[:space:]]$" "$SKILL_FILE"; then
-            echo "Warning: Trailing whitespace found in SKILL.md"
-          fi
-
-          # Check for tabs
-          if grep -q $'\t' "$SKILL_FILE"; then
-            echo "Warning: Tabs found in SKILL.md (use spaces)"
-          fi
-
-          echo "✓ Common issues check complete"
-
-      - name: Validate description length for ${{ matrix.skill }}
-        run: |
-          SKILL="${{ matrix.skill }}"
-          SKILL_FILE="skills/$SKILL/SKILL.md"
-
-          echo "Validating description length..."
-
-          DESCRIPTION=$(grep "^description:" "$SKILL_FILE" | sed 's/description: //' | xargs)
           LENGTH=${#DESCRIPTION}
 
-          if [ $LENGTH -gt 1024 ]; then
-            echo "Error: Description too long ($LENGTH characters, max 1024)"
+          if [ "$LENGTH" -lt 10 ]; then
+            echo "Description too short"
             exit 1
           fi
 
-          if [ $LENGTH -lt 10 ]; then
-            echo "Error: Description too short ($LENGTH characters, min 10)"
+          if [ "$LENGTH" -gt 1024 ]; then
+            echo "Description too long"
             exit 1
           fi
 
-          echo "✓ Description length is valid ($LENGTH characters)"
+      - name: Validate version
+        run: |
+          FILE="skills/${{ matrix.skill }}/SKILL.md"
 
-      - name: Validate name format for ${{ matrix.skill }}
+          VERSION=$(yq '.version' "$FILE")
+
+          echo "$VERSION" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+$' || {
+            echo "Version must use semantic versioning"
+            exit 1
+          }
+
+      - name: Validate tags
+        run: |
+          FILE="skills/${{ matrix.skill }}/SKILL.md"
+
+          COUNT=$(yq '.tags | length' "$FILE")
+
+          if [ "$COUNT" -lt 1 ]; then
+            echo "At least one tag required"
+            exit 1
+          fi
+
+      - name: Validate folder name
         run: |
           SKILL="${{ matrix.skill }}"
 
-          echo "Validating name format..."
-
-          # Check name is lowercase alphanumeric with hyphens
-          if ! echo "$SKILL" | grep -qE '^[a-z0-9]+(-[a-z0-9]+)*$'; then
-            echo "Error: Skill name '$SKILL' must be lowercase alphanumeric with hyphens only"
+          echo "$SKILL" | grep -qE '^[a-z0-9]+(-[a-z0-9]+)*$' || {
+            echo "Invalid folder name"
             exit 1
-          fi
+          }
 
-          # Check no consecutive hyphens
-          if echo "$SKILL" | grep -q -- '--'; then
-            echo "Error: Skill name '$SKILL' must not contain consecutive hyphens"
-            exit 1
-          fi
-
-          # Check doesn't start or end with hyphen
-          if echo "$SKILL" | grep -qE '(^-|-$)'; then
-            echo "Error: Skill name '$SKILL' must not start or end with hyphen"
-            exit 1
-          fi
-
-          echo "✓ Name format is valid"
-
-      - name: Summary
+      - name: Success
         run: |
-          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-          echo "✓ All validations passed for ${{ matrix.skill }}!"
-          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "✓ Skill validated successfully"
