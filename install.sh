@@ -21,10 +21,10 @@ info()  { printf "  ${DIM}%s${RST}\n" "$*"; }
 # ─── intro ───────────────────────────────────────────────────
 printf "${PINK}"
 cat <<'EOF'
-   ╭──────────────────────────────────────────╮
-   │   OWASP SECURITY SKILL · INSTALLER      │
-   │   OWASP Top 10 Security Best Practices   │
-   ╰──────────────────────────────────────────╯
+   ╭──────────────────────────────────────────────────╮
+   │          Filippo's SKILL · INSTALLER             │
+   │   My personal skills for agentic development     │
+   ╰──────────────────────────────────────────────────╯
 EOF
 printf "${RST}\n"
 
@@ -76,7 +76,7 @@ ok "Directories ready"
 step "Installing skills"
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-SKILLS_DIR="$SCRIPT_DIR"
+SKILLS_DIR="$SCRIPT_DIR/skills"
 
 if [ ! -d "$SKILLS_DIR" ]; then
   err "Skills directory not found at $SKILLS_DIR"
@@ -128,7 +128,7 @@ done
 printf "\n${GREEN}"
 cat <<'EOF'
    ╭──────────────────────────────────────────╮
-   │   ✓ Installation Complete!              │
+   │   ✓ Installation Complete!               │
    │                                          │
    │   All skills are now available           │
    │   in your AI coding agent.               │
