@@ -1,4 +1,4 @@
----
+﻿---
 name: owasp-security
 description: Implement secure coding practices following OWASP Top 10. Use when preventing security vulnerabilities, implementing authentication, securing APIs, or conducting security reviews. Triggers on OWASP, security, XSS, SQL injection, CSRF, authentication security, secure coding, vulnerability.
 version: 1.0.0
@@ -33,13 +33,13 @@ Prevent common security vulnerabilities in web applications.
 
 ### Prevention Patterns
 ```typescript
-// ❌ BAD: No authorization check
+// âŒ BAD: No authorization check
 app.get('/api/users/:id', async (req, res) => {
   const user = await db.users.findById(req.params.id);
   res.json(user);
 });
 
-// ✅ GOOD: Verify ownership
+// âœ… GOOD: Verify ownership
 app.get('/api/users/:id', authenticate, async (req, res) => {
   const userId = req.params.id;
   
@@ -52,7 +52,7 @@ app.get('/api/users/:id', authenticate, async (req, res) => {
   res.json(user);
 });
 
-// ✅ GOOD: Role-based access control (RBAC)
+// âœ… GOOD: Role-based access control (RBAC)
 const requireRole = (...roles: string[]) => {
   return (req: Request, res: Response, next: NextFunction) => {
     if (!roles.includes(req.user?.role)) {
@@ -67,11 +67,11 @@ app.delete('/api/posts/:id', authenticate, requireRole('admin', 'moderator'), de
 
 ### Insecure Direct Object Reference (IDOR)
 ```typescript
-// ❌ BAD: Predictable IDs exposed
+// âŒ BAD: Predictable IDs exposed
 GET /api/invoices/1001
 GET /api/invoices/1002  // Can enumerate others' invoices
 
-// ✅ GOOD: Use UUIDs + ownership check
+// âœ… GOOD: Use UUIDs + ownership check
 app.get('/api/invoices/:id', authenticate, async (req, res) => {
   const invoice = await db.invoices.findOne({
     id: req.params.id,
@@ -92,11 +92,11 @@ app.get('/api/invoices/:id', authenticate, async (req, res) => {
 ```typescript
 import bcrypt from 'bcrypt';
 
-// ❌ BAD: Plain text or weak hashing
+// âŒ BAD: Plain text or weak hashing
 const hash = md5(password);  // Never use MD5
 const hash = sha1(password);  // Never use SHA1
 
-// ✅ GOOD: bcrypt with cost ≥ 12
+// âœ… GOOD: bcrypt with cost â‰¥ 12
 const hashPassword = async (password: string): Promise<string> => {
   return bcrypt.hash(password, 12);
 };
@@ -110,7 +110,7 @@ const verifyPassword = async (password: string, hash: string): Promise<boolean> 
 ```typescript
 import helmet from 'helmet';
 
-// ✅ GOOD: Security headers
+// âœ… GOOD: Security headers
 app.use(helmet());
 app.use(helmet.hsts({ maxAge: 31536000 }));
 app.use(helmet.contentSecurityPolicy({
@@ -125,25 +125,25 @@ app.use(helmet.contentSecurityPolicy({
 
 ### SQL Injection Prevention
 ```typescript
-// ❌ BAD: String concatenation
+// âŒ BAD: String concatenation
 const query = `SELECT * FROM users WHERE id = ${userId}`;
 const result = await db.query(query);
 
-// ✅ GOOD: Parameterized queries
+// âœ… GOOD: Parameterized queries
 const query = 'SELECT * FROM users WHERE id = $1';
 const result = await db.query(query, [userId]);
 
-// ✅ GOOD: ORM methods
+// âœ… GOOD: ORM methods
 const user = await User.findByPk(userId);
 ```
 
 ### NoSQL Injection Prevention
 ```typescript
-// ❌ BAD: Direct object injection
+// âŒ BAD: Direct object injection
 const query = { username: req.body.username, password: req.body.password };
 const user = await User.findOne(query);
 
-// ✅ GOOD: Validate against schema
+// âœ… GOOD: Validate against schema
 const schema = z.object({
   username: z.string().min(3).max(50),
   password: z.string().min(8),
@@ -155,11 +155,11 @@ const user = await User.findOne(data);
 
 ### Command Injection Prevention
 ```typescript
-// ❌ BAD: Shell command with user input
+// âŒ BAD: Shell command with user input
 const { exec } = require('child_process');
 exec(`git log --author="${author}"`, callback);
 
-// ✅ GOOD: Use execFile with array arguments
+// âœ… GOOD: Use execFile with array arguments
 const { execFile } = require('child_process');
 execFile('git', ['log', '--author', author], callback);
 ```
@@ -170,7 +170,7 @@ execFile('git', ['log', '--author', author], callback);
 ```typescript
 import rateLimit from 'express-rate-limit';
 
-// ✅ GOOD: Rate limiting on sensitive endpoints
+// âœ… GOOD: Rate limiting on sensitive endpoints
 const authLimiter = rateLimit({
   windowMs: 60 * 60 * 1000, // 1 hour
   max: 5, // 5 attempts
@@ -183,7 +183,7 @@ app.use('/api/auth/', authLimiter);
 ```typescript
 import { z } from 'zod';
 
-// ✅ GOOD: Schema validation
+// âœ… GOOD: Schema validation
 const userSchema = z.object({
   email: z.string().email(),
   password: z.string().min(8).regex(/[A-Z]/).regex(/[0-9]/),
@@ -196,16 +196,16 @@ const data = userSchema.parse(req.body);
 
 ### Environment Configuration
 ```typescript
-// ❌ BAD: Hardcoded secrets
+// âŒ BAD: Hardcoded secrets
 const apiKey = 'sk_live_1234567890abcdef';
 
-// ✅ GOOD: Environment variables
+// âœ… GOOD: Environment variables
 const apiKey = process.env.API_KEY;
 
-// ❌ BAD: Debug mode in production
+// âŒ BAD: Debug mode in production
 app.use(express.json({ debug: true }));
 
-// ✅ GOOD: Conditional debug
+// âœ… GOOD: Conditional debug
 app.use(express.json({ debug: process.env.NODE_ENV !== 'production' }));
 ```
 
@@ -226,7 +226,7 @@ npx snyk monitor
 
 ### Secure Session Management
 ```typescript
-// ✅ GOOD: Secure cookie configuration
+// âœ… GOOD: Secure cookie configuration
 app.use(session({
   secret: process.env.SESSION_SECRET,
   cookie: {
@@ -240,7 +240,7 @@ app.use(session({
 
 ### Multi-Factor Authentication
 ```typescript
-// ✅ GOOD: Implement MFA for sensitive operations
+// âœ… GOOD: Implement MFA for sensitive operations
 const enableMFA = async (userId: string) => {
   const secret = speakeasy.generateSecret();
   await User.update(userId, { mfaSecret: secret.base32 });
@@ -260,7 +260,7 @@ const verifyMFA = (token: string, secret: string): boolean => {
 
 ### Content Security Policy
 ```typescript
-// ✅ GOOD: CSP headers
+// âœ… GOOD: CSP headers
 app.use(helmet.contentSecurityPolicy({
   directives: {
     defaultSrc: ["'self'"],
@@ -275,10 +275,10 @@ app.use(helmet.contentSecurityPolicy({
 ```typescript
 import DOMPurify from 'dompurify';
 
-// ❌ BAD: Direct HTML rendering
+// âŒ BAD: Direct HTML rendering
 <div dangerouslySetInnerHTML={{ __html: userContent }} />
 
-// ✅ GOOD: Sanitize HTML
+// âœ… GOOD: Sanitize HTML
 const cleanContent = DOMPurify.sanitize(userContent);
 <div dangerouslySetInnerHTML={{ __html: cleanContent }} />
 ```
@@ -287,7 +287,7 @@ const cleanContent = DOMPurify.sanitize(userContent);
 
 ### Security Event Logging
 ```typescript
-// ✅ GOOD: Log security events
+// âœ… GOOD: Log security events
 logger.info('User login', { userId, ip, timestamp });
 logger.warn('Failed login attempt', { email, ip, reason });
 logger.error('Access denied', { userId, resource, action });
@@ -297,10 +297,10 @@ logger.error('Access denied', { userId, resource, action });
 
 ### URL Validation
 ```typescript
-// ❌ BAD: Direct fetch with user input
+// âŒ BAD: Direct fetch with user input
 const data = await fetch(userProvidedUrl);
 
-// ✅ GOOD: Validate against allowlist
+// âœ… GOOD: Validate against allowlist
 const ALLOWED_DOMAINS = ['api.example.com', 'cdn.example.com'];
 
 const isValidUrl = (url: string): boolean => {
@@ -320,7 +320,7 @@ if (isValidUrl(userProvidedUrl)) {
 ## Security Checklist
 
 Before deploying, verify:
-- [ ] Passwords hashed with bcrypt (cost ≥ 12)
+- [ ] Passwords hashed with bcrypt (cost â‰¥ 12)
 - [ ] JWT tokens have short expiry
 - [ ] Session cookies are httpOnly, secure, sameSite
 - [ ] Rate limiting on auth endpoints
