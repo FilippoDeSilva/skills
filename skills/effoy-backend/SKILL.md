@@ -1,6 +1,16 @@
 ---
 name: effoy-backend
 description: Comprehensive guide for the Effoy Core System - a NestJS wedding management application. Use when working on this project, implementing new features, refactoring code, or troubleshooting issues. Covers architecture, configuration, utilities, database (PostgreSQL + Prisma), authentication, background jobs, and development workflows.
+version: 1.0.0
+author: FilippoDeSilva
+tags:
+  - nestjs
+  - prisma
+  - postgres
+  - redis
+  - bullmq
+  - rbac
+  - websocket
 ---
 
 # Effoy Core System - Project Architecture & Developer Guide
