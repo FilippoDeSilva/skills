@@ -35,8 +35,7 @@ jobs:
       # -----------------------------
       - name: Generate skills catalog
         run: |
-          cd scripts
-          node build-catalog.mjs
+          node scripts/build-catalog.mjs
 
       - name: Copy catalog to root
         run: |
