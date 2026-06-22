@@ -1,0 +1,90 @@
+name: Generate Skills Catalog
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install yq
+        run: |
+          sudo wget -q \
+            https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 \
+            -O /usr/local/bin/yq
+
+          sudo chmod +x /usr/local/bin/yq
+
+      - name: Generate SKILLS.md
+        run: |
+          {
+            echo "# Available Skills"
+            echo
+            echo "| Skill | Version | Author | Description |"
+            echo "|---------|---------|---------|---------|"
+
+            for file in skills/*/SKILL.md; do
+              [ -f "$file" ] || continue
+
+              NAME=$(yq '.name' "$file")
+              VERSION=$(yq '.version' "$file")
+              AUTHOR=$(yq '.author' "$file")
+              DESCRIPTION=$(yq '.description' "$file")
+
+              echo "| $NAME | $VERSION | $AUTHOR | $DESCRIPTION |"
+            done
+          } > SKILLS.md
+
+      - name: Generate skills-index.json
+        run: |
+          echo "[" > skills-index.json
+
+          FIRST=true
+
+          for file in skills/*/SKILL.md; do
+            [ -f "$file" ] || continue
+
+            JSON=$(yq -o=json '
+              {
+                name: .name,
+                description: .description,
+                version: .version,
+                author: .author,
+                tags: .tags
+              }
+            ' "$file")
+
+            if [ "$FIRST" = true ]; then
+              FIRST=false
+            else
+              echo "," >> skills-index.json
+            fi
+
+            echo "$JSON" >> skills-index.json
+          done
+
+          echo "]" >> skills-index.json
+
+      - name: Commit generated catalog
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add SKILLS.md
+          git add skills-index.json
+
+          if git diff --cached --quiet; then
+            echo "No changes detected"
+            exit 0
+          fi
+
+          git commit -m "chore(skills): update catalog"
+          git push

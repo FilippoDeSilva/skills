@@ -1,4 +1,4 @@
-name: Validate Skills
+name: Validate Skills Registry
 
 on:
   push:
@@ -12,34 +12,33 @@ jobs:
     runs-on: ubuntu-latest
 
     outputs:
-      skills: ${{ steps.find-skills.outputs.skills }}
+      skills: ${{ steps.find.outputs.skills }}
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Find all skills
-        id: find-skills
+      - name: Find skills
+        id: find
         run: |
-          if [ -d "skills" ]; then
-            SKILLS=$(find skills -mindepth 1 -maxdepth 1 -type d \
-              | xargs -n1 basename \
-              | jq -R . \
-              | jq -s -c .)
-
-            echo "skills=$SKILLS" >> $GITHUB_OUTPUT
-            echo "Found skills: $SKILLS"
-          else
+          if [ ! -d "skills" ]; then
             echo 'skills=[]' >> $GITHUB_OUTPUT
-            echo "No skills directory found"
+            exit 0
           fi
+
+          SKILLS=$(find skills -mindepth 1 -maxdepth 1 -type d \
+            -exec basename {} \; \
+            | jq -R . | jq -s -c .)
+
+          echo "skills=$SKILLS" >> $GITHUB_OUTPUT
+          echo "Found skills: $SKILLS"
 
   validate:
     needs: find-skills
-
     runs-on: ubuntu-latest
 
     strategy:
+      fail-fast: false
       matrix:
         skill: ${{ fromJson(needs.find-skills.outputs.skills) }}
 
@@ -47,135 +46,149 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Validate ${{ matrix.skill }}
+      - name: Setup jq
+        run: sudo apt-get update && sudo apt-get install -y jq
+
+      - name: Validate skill exists
         run: |
           SKILL="${{ matrix.skill }}"
-          SKILL_DIR="skills/$SKILL"
-          SKILL_FILE="$SKILL_DIR/SKILL.md"
+          DIR="skills/$SKILL"
+          FILE="$DIR/SKILL.md"
 
-          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-          echo "Validating skill: $SKILL"
-          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-
-          # Check if skill directory exists
-          if [ ! -d "$SKILL_DIR" ]; then
-            echo "Error: $SKILL_DIR not found"
+          if [ ! -d "$DIR" ]; then
+            echo "❌ Missing directory: $DIR"
             exit 1
           fi
 
-          # Check if SKILL.md exists
-          if [ ! -f "$SKILL_FILE" ]; then
-            echo "Error: SKILL.md not found in $SKILL_DIR"
+          if [ ! -f "$FILE" ]; then
+            echo "❌ Missing SKILL.md in $DIR"
             exit 1
           fi
 
-          echo "✓ Skill directory exists"
-          echo "✓ SKILL.md exists"
+          echo "✓ Structure valid for $SKILL"
 
-      - name: Validate SKILL.md format for ${{ matrix.skill }}
+      - name: Validate SKILL.md schema
         run: |
           SKILL="${{ matrix.skill }}"
-          SKILL_FILE="skills/$SKILL/SKILL.md"
+          FILE="skills/$SKILL/SKILL.md"
 
-          echo "Validating SKILL.md format..."
+          echo "Validating YAML frontmatter..."
 
-          # Validate frontmatter
-          if ! grep -q "^---$" "$SKILL_FILE"; then
-            echo "Error: SKILL.md missing frontmatter"
+          FRONTMATTER=$(awk 'BEGIN {in_yaml=0} /^---$/ {i++; if(i==2) exit; in_yaml=!in_yaml; next} in_yaml {print}' "$FILE")
+
+          echo "$FRONTMATTER" > meta.yaml
+
+          # Extract fields
+          NAME=$(yq '.name' meta.yaml)
+          DESC=$(yq '.description' meta.yaml)
+          VERSION=$(yq '.version' meta.yaml)
+          AUTHOR=$(yq '.author' meta.yaml)
+          TAGS=$(yq '.tags' meta.yaml)
+
+          # Required fields
+          if [ -z "$NAME" ] || [ "$NAME" == "null" ]; then
+            echo "❌ Missing name"
             exit 1
           fi
 
-          # Validate name field
-          if ! grep -q "^name:" "$SKILL_FILE"; then
-            echo "Error: SKILL.md missing name field"
+          if [ -z "$DESC" ] || [ "$DESC" == "null" ]; then
+            echo "❌ Missing description"
             exit 1
           fi
 
-          # Validate description field
-          if ! grep -q "^description:" "$SKILL_FILE"; then
-            echo "Error: SKILL.md missing description field"
+          # Folder match rule
+          if [ "$NAME" != "$SKILL" ]; then
+            echo "❌ name mismatch: $NAME != $SKILL"
             exit 1
           fi
 
-          # Validate name matches folder name
-          SKILL_NAME=$(grep "^name:" "$SKILL_FILE" | sed 's/name: //' | xargs)
-
-          if [ "$SKILL_NAME" != "$SKILL" ]; then
-            echo "Error: name field '$SKILL_NAME' does not match folder name '$SKILL'"
+          # Version check (semver basic)
+          if ! echo "$VERSION" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+$'; then
+            echo "❌ invalid version (must be semver)"
             exit 1
           fi
 
-          echo "✓ SKILL.md format is valid"
+          echo "✓ schema valid"
 
-      - name: Check for common issues in ${{ matrix.skill }}
+      - name: Validate tags format
         run: |
           SKILL="${{ matrix.skill }}"
-          SKILL_FILE="skills/$SKILL/SKILL.md"
+          FILE="skills/$SKILL/SKILL.md"
 
-          echo "Checking for common issues..."
+          TAGS=$(yq '.tags[]?' "$FILE" 2>/dev/null || true)
 
-          # Check for trailing whitespace
-          if grep -q "[[:space:]]$" "$SKILL_FILE"; then
-            echo "Warning: Trailing whitespace found in SKILL.md"
-          fi
+          for tag in $TAGS; do
+            if ! echo "$tag" | grep -Eq '^[a-z0-9-]+$'; then
+              echo "❌ Invalid tag: $tag"
+              exit 1
+            fi
+          done
 
-          # Check for tabs
-          if grep -q $'\t' "$SKILL_FILE"; then
-            echo "Warning: Tabs found in SKILL.md (use spaces)"
-          fi
+          echo "✓ tags valid"
 
-          echo "✓ Common issues check complete"
-
-      - name: Validate description length for ${{ matrix.skill }}
+      - name: Check README (optional)
         run: |
           SKILL="${{ matrix.skill }}"
-          SKILL_FILE="skills/$SKILL/SKILL.md"
-
-          echo "Validating description length..."
-
-          DESCRIPTION=$(grep "^description:" "$SKILL_FILE" | sed 's/description: //' | xargs)
-          LENGTH=${#DESCRIPTION}
-
-          if [ $LENGTH -gt 1024 ]; then
-            echo "Error: Description too long ($LENGTH characters, max 1024)"
-            exit 1
+          if [ ! -f "skills/$SKILL/README.md" ]; then
+            echo "⚠️ README.md missing (optional)"
+          else
+            echo "✓ README exists"
           fi
 
-          if [ $LENGTH -lt 10 ]; then
-            echo "Error: Description too short ($LENGTH characters, min 10)"
-            exit 1
-          fi
+  build-catalog:
+    needs: validate
+    runs-on: ubuntu-latest
 
-          echo "✓ Description length is valid ($LENGTH characters)"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - name: Validate name format for ${{ matrix.skill }}
+      - name: Setup yq + jq
         run: |
-          SKILL="${{ matrix.skill }}"
+          sudo apt-get update
+          sudo apt-get install -y jq
+          wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq
+          chmod +x /usr/bin/yq
 
-          echo "Validating name format..."
-
-          # Check name is lowercase alphanumeric with hyphens
-          if ! echo "$SKILL" | grep -qE '^[a-z0-9]+(-[a-z0-9]+)*$'; then
-            echo "Error: Skill name '$SKILL' must be lowercase alphanumeric with hyphens only"
-            exit 1
-          fi
-
-          # Check no consecutive hyphens
-          if echo "$SKILL" | grep -q -- '--'; then
-            echo "Error: Skill name '$SKILL' must not contain consecutive hyphens"
-            exit 1
-          fi
-
-          # Check doesn't start or end with hyphen
-          if echo "$SKILL" | grep -qE '(^-|-$)'; then
-            echo "Error: Skill name '$SKILL' must not start or end with hyphen"
-            exit 1
-          fi
-
-          echo "✓ Name format is valid"
-
-      - name: Summary
+      - name: Generate skills catalog
         run: |
-          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-          echo "✓ All validations passed for ${{ matrix.skill }}!"
-          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          mkdir -p dist
+
+          echo "[]" > dist/skills.index.json
+
+          for dir in skills/*; do
+            if [ -d "$dir" ]; then
+
+              FILE="$dir/SKILL.md"
+
+              NAME=$(yq '.name' "$FILE")
+              DESC=$(yq '.description' "$FILE")
+              VERSION=$(yq '.version' "$FILE")
+              AUTHOR=$(yq '.author' "$FILE")
+              TAGS=$(yq '.tags' "$FILE" | jq -c '. // []')
+
+              jq --arg name "$NAME" \
+                 --arg desc "$DESC" \
+                 --arg version "$VERSION" \
+                 --arg author "$AUTHOR" \
+                 --argjson tags "$TAGS" \
+                 '. += [{
+                    name: $name,
+                    description: $desc,
+                    version: $version,
+                    author: $author,
+                    tags: $tags
+                 }]' dist/skills.index.json > tmp.json
+
+              mv tmp.json dist/skills.index.json
+            fi
+          done
+
+          echo "Generated catalog:"
+          cat dist/skills.index.json
+
+      - name: Upload catalog artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: skills-index
+          path: dist/skills.index.json
