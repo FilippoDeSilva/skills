@@ -15,7 +15,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install yq + jq
+      - name: Install tools
         run: |
           sudo apt-get update
           sudo apt-get install -y jq
@@ -25,7 +25,6 @@ jobs:
             -O /usr/local/bin/yq
 
           sudo chmod +x /usr/local/bin/yq
-          yq --version
 
       - name: Generate SKILLS.md
         run: |
@@ -38,23 +37,23 @@ jobs:
             for file in skills/*/SKILL.md; do
               [ -f "$file" ] || continue
 
-              # SAFE YAML read (never crash)
+              # safer direct read (NO frontmatter extraction needed here)
               NAME=$(yq -r '.name // empty' "$file" 2>/dev/null || true)
+
+              if [ -z "$NAME" ]; then
+                echo "⚠️ Skipping invalid skill: $file"
+                continue
+              fi
+
               VERSION=$(yq -r '.version // "0.0.0"' "$file" 2>/dev/null || true)
               AUTHOR=$(yq -r '.author // "unknown"' "$file" 2>/dev/null || true)
               DESCRIPTION=$(yq -r '.description // ""' "$file" 2>/dev/null || true)
-
-              # skip broken skills
-              if [ -z "$NAME" ]; then
-                echo "⚠️ Skipping invalid skill file: $file"
-                continue
-              fi
 
               echo "| $NAME | $VERSION | $AUTHOR | $DESCRIPTION |"
             done
           } > SKILLS.md
 
-      - name: Generate skills-index.json (ROBUST)
+      - name: Generate skills-index.json (FIXED)
         run: |
           echo "[" > skills-index.json
           FIRST=true
@@ -62,31 +61,18 @@ jobs:
           for file in skills/*/SKILL.md; do
             [ -f "$file" ] || continue
 
-            # extract frontmatter safely
-            FRONTMATTER=$(awk '
-              BEGIN {in_yaml=0; c=0}
-              /^---$/ {c++; if(c==1){in_yaml=1; next} if(c==2){exit}}
-              in_yaml {print}
-            ' "$file" || true)
+            # direct safe parsing (NO awk, NO temp files)
+            NAME=$(yq -r '.name // empty' "$file" 2>/dev/null || true)
 
-            TMP=$(mktemp)
-            echo "$FRONTMATTER" > "$TMP"
-
-            NAME=$(yq -r '.name // empty' "$TMP" 2>/dev/null || true)
-            VERSION=$(yq -r '.version // "0.0.0"' "$TMP" 2>/dev/null || true)
-            AUTHOR=$(yq -r '.author // "unknown"' "$TMP" 2>/dev/null || true)
-            DESCRIPTION=$(yq -r '.description // ""' "$TMP" 2>/dev/null || true)
-
-            # tags safe parse
-            TAGS=$(yq -o=json '.tags // []' "$TMP" 2>/dev/null || echo "[]")
-
-            rm -f "$TMP"
-
-            # skip broken
             if [ -z "$NAME" ]; then
               echo "⚠️ Skipping broken skill: $file"
               continue
             fi
+
+            VERSION=$(yq -r '.version // "0.0.0"' "$file" 2>/dev/null || true)
+            AUTHOR=$(yq -r '.author // "unknown"' "$file" 2>/dev/null || true)
+            DESCRIPTION=$(yq -r '.description // ""' "$file" 2>/dev/null || true)
+            TAGS=$(yq -o=json '.tags // []' "$file" 2>/dev/null || echo "[]")
 
             JSON=$(jq -n \
               --arg name "$NAME" \
@@ -107,7 +93,7 @@ jobs:
 
           echo "]" >> skills-index.json
 
-      - name: Commit generated catalog
+      - name: Commit catalog
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -115,9 +101,9 @@ jobs:
           git add SKILLS.md skills-index.json
 
           if git diff --cached --quiet; then
-            echo "No changes detected"
+            echo "No changes"
             exit 0
           fi
 
-          git commit -m "chore(skills): update catalog"
+          git commit -m "chore: update skills catalog"
           git push
