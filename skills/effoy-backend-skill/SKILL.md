@@ -1,3 +1,8 @@
+---
+name: effoy-backend
+description: Comprehensive guide for the Effoy Core System - a NestJS wedding management application. Use when working on this project, implementing new features, refactoring code, or troubleshooting issues. Covers architecture, configuration, utilities, database (PostgreSQL + Prisma), authentication, background jobs, and development workflows.
+---
+
 # Effoy Core System - Project Architecture & Developer Guide
 
 ## Overview
@@ -241,14 +246,202 @@ The application uses dynamic module loading based on the `MODULES_SET` environme
 ### Background Job Processing
 
 **BullMQ Integration** (`src/background/queues/`)
-- **Email Queue**: Email verification jobs
-  - Config: `notificationQueueConfig`, `notificationDeadLetterQueueConfig`
-  - Retry: 3 attempts with exponential backoff
-  - Retention: 1 hour for completed, 24 hours for failed
 
-- **Notification Queue**: Notification jobs
-  - Similar configuration to email queue
-  - Dead letter queue for failed jobs
+Thequeue system has been refactored with a resilient, secure, and scalable architecture:
+
+Directory Structure:**
+```
+src/background/queues/
+├── base/                      # Base classes and utilities
+│   ├── base-queue-processor.ts # Abstract processor with common functionality
+│   ├── base-queue-service.ts   # Abstract service with validation/encryption
+│   ├── circuit-breaker.util.ts  # Circuit breaker for external services
+│   ├── graceful-shutdown.util.ts # Graceful shutdown handling
+│   ├── job-dependencies.util.ts # Job chaining and dependencies
+│   ├── scheduled-jobs.util.ts   # Cron-like scheduled jobs
+│   └── index.ts                # Barrel exports
+├── email-queue/               # Email verification jobs
+│   ├── email-queue.service.ts
+│   ├── email.processor.ts
+│   └── email-queue.module.ts
+├── notification-queue/        # Notification jobs
+│   ├── notification-queue.service.ts
+│   ├── notification.processor.ts
+│   └── notification-queue.module.ts
+├── health/                    # Queue health monitoring
+│   └── queue-health.controller.ts
+├── metrics/                  # Queue metrics collection
+│   └── queue-metrics.service.ts
+└── validation/                # Job data validation schemas
+    ├── email-job.validation.ts
+    └── notification-job.validation.ts
+```
+
+**Base Classes:**
+
+**BaseQueueProcessor** (`src/background/queues/base/base-queue-processor.ts`)
+- Abstract base class for all queue processors
+- Provides common functionality:
+  - Logging and error handling
+  - Job data validation and decryption
+  - Metrics emission
+  - Retry logic hooks
+  - Job lifecycle event handlers
+- Extends `WorkerHost` from BullMQ
+- Abstract methods to implement:
+  - `validateJobData()`: Validate job data before processing
+  - `getSensitiveFields()`: Return field names to encrypt
+  - `processJob()`: Main job processing logic
+
+**BaseQueueService** (`src/background/queues/base/base-queue-service.ts`)
+- Abstract base class for all queue services
+- Provides common functionality:
+  - Job data validation
+  - Sensitive field encryption
+  - Job addition with options
+  - Bulk job addition
+  - Audit logging hooks
+- Abstract methods to implement:
+  - `getQueueName()`: Return the queue name
+  - `getSensitiveFields()`: Return field names to encrypt
+  - `validateJobData()`: Validate job data
+
+**Utilities:**
+
+**CircuitBreaker** (`src/background/queues/base/circuit-breaker.util.ts`)
+- Prevents cascading failures for external service calls
+- Configurable thresholds:
+  - `failureThreshold`: Number of failures before opening (default: 5)
+  - `successThreshold`: Number of successes before closing (default: 3)
+  - `timeout`: Time to wait before attempting recovery (default: 60000ms)
+  - `monitoringPeriod`: Time window for failure counting (default: 30000ms)
+- States: CLOSED, OPEN, HALF_OPEN
+- Registry for managing multiple circuit breakers
+
+**GracefulShutdown** (`src/background/queues/base/graceful-shutdown.util.ts`)
+- Ensures jobs aren't lost during application shutdown
+- Handles SIGTERM and SIGINT signals
+- Closes all registered queues gracefully
+- Provides queue statistics before shutdown
+- Singleton pattern
+
+**ScheduledJobsManager** (`src/background/queues/base/scheduled-jobs.util.ts`)
+- Manages cron-like scheduled jobs
+- Supports repeating jobs with cron patterns
+- Supports delayed jobs
+- Timezone support
+- Singleton pattern
+
+**JobDependenciesManager** (`src/background/queues/base/job-dependencies.util.ts`)
+- Manages job dependencies and chaining
+- Supports sequential job chaining
+- Supports parallel job flows
+- Limited support for multiple parent dependencies
+- Parent job tracking
+
+**QueueMetricsService** (`src/background/queues/metrics/queue-metrics.service.ts`)
+- Collects metrics for queue operations
+- Supports counters, timings, and gauges
+- Provides percentile statistics (p50, p95, p99)
+- Singleton pattern
+- Can be integrated with Prometheus/Datadog
+
+**Queue Configuration** (`src/config/bull-queue/bull-queue.config.ts`)
+
+**Notification Queue:**
+- Concurrency: 20 (increased from 5 for better resource utilization)
+- Rate limiting: 50 jobs/second (increased from 10)
+- Attempts: 5 (increased from 3)
+- Backoff: Exponential, 2 seconds
+- Retention: 1 hour for completed, 24 hours for failed
+- Stalled job detection: 5 minutes
+- Dead letter queue configured
+
+**Email Queue:**
+- Concurrency: 10 (increased from 1 for better resource utilization)
+- Rate limiting: 20 jobs/second (increased from 1)
+- Attempts: 5 (increased from 3)
+- Backoff: Exponential, 2 seconds
+- Retention: 1 hour for completed, 24 hours for failed
+- Stalled job detection: 5 minutes
+- Dead letter queue configured
+
+**Security Features:**
+- Job data validation before queue addition
+- Sensitive field encryption (email, phone, tokens)
+- Circuit breaker protection for external services
+- Audit logging hooks
+
+**Health Monitoring** (`src/background/queues/health/queue-health.controller.ts`)
+- Endpoints:
+  - `GET /health/queues` - Overall queue health
+  - `GET /health/queues/notification` - Notification queue stats
+  - `GET /health/queues/email` - Email queue stats
+- Returns queue statistics (waiting, active, completed, failed, delayed)
+
+**Adding a New Queue:**
+
+1. Create queue config in `src/config/bull-queue/bull-queue.config.ts`
+2. Create validation schema in `src/background/queues/validation/`
+3. Create queue service extending `BaseQueueService<T>`:
+   ```typescript
+   @Injectable()
+   export class MyQueueService extends BaseQueueService<IMyJob> {
+     constructor(
+       @InjectQueue(QueueName.MY_QUEUE) queue: any,
+       configService: ConfigService,
+       encryptionUtil: EncryptionUtil,
+     ) {
+       super('MyQueueService', queue, configService, encryptionUtil);
+     }
+
+    getQueueName(): string {
+      return QueueName.MY_QUEUE;
+    }
+
+    getSensitiveFields(): string[] {
+      return ['email', 'phone']; // Fields to encrypt
+    }
+
+    async validateJobData(data: IMyJob): Promise<void> {
+      // Validation logic
+    }
+  }
+  ```
+
+4. Create processor extending `BaseQueueProcessor<T>`:
+  ```typescript
+  @Processor(QueueName.MY_QUEUE, {
+    concurrency: 10,
+    drainDelay: 300,
+    stalledInterval: 300000,
+  })
+  export class MyProcessor extends BaseQueueProcessor<IMyJob> {
+    constructor(
+      configService: ConfigService,
+      encryptionUtil: EncryptionUtil,
+      myService: MyService,
+    ) {
+      super('MyProcessor', configService, encryptionUtil);
+      this.myService = myService;
+    }
+
+    async validateJobData(data: IMyJob): Promise<void> {
+      // Validation logic
+    }
+
+    getSensitiveFields(): string[] {
+      return ['email', 'phone'];
+    }
+
+    async processJob(job: Job<IMyJob>): Promise<any> {
+      // Job processing logic
+    }
+  }
+  ```
+
+5. Create module and add to BackgroundModule
+6. Add tests mocking dependencies (queue, configService, encryptionUtil)
 
 ### Caching Strategy
 
@@ -638,10 +831,14 @@ pnpm type-check
 - Monitor cache hit rates
 
 ### Background Jobs
-- Configure appropriate retry policies
-- Set reasonable job retention periods
-- Monitor queue depths
+- Configure appropriate retry policies (5 attempts with exponential backoff)
+- Set reasonable job retention periods (1hr completed, 24hr failed)
+- Monitor queue depths via health endpoints
 - Use dead letter queues for failed jobs
+- Use circuit breakers for external service calls
+- Implement job validation and encryption
+- Use recommended concurrency limits (I/O-bound: 10-20, CPU-bound: 1-5)
+- Use global rate limiting (50 jobs/sec for notification, 20 jobs/sec for email)
 
 ### API
 - Enable compression (already configured)
