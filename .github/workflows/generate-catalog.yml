@@ -66,6 +66,9 @@ jobs:
           for file in skills/*/SKILL.md; do
             [ -f "$file" ] || continue
 
+            # Strip BOM if present
+            sed -i '1s/^\xEF\xBB\xBF//' "$file"
+
             echo "🔎 Processing: $file"
 
             # -------------------------
@@ -120,6 +123,30 @@ jobs:
           done
 
           echo "]" >> skills-index.json
+
+      # -----------------------------
+      # GENERATE SKILLS.MD
+      # -----------------------------
+      - name: Generate SKILLS.md markdown table
+        run: |
+          echo "# Available Skills" > SKILLS.md
+          echo "" >> SKILLS.md
+          echo "| Skill | Version | Author | Description |" >> SKILLS.md
+          echo "|-------|---------|---------|-------------|" >> SKILLS.md
+
+          for file in skills/*/SKILL.md; do
+            [ -f "$file" ] || continue
+
+            NAME=$(yq e '.name' "$file" 2>/dev/null | tr -d '\r' || true)
+            VERSION=$(yq e '.version' "$file" 2>/dev/null || echo "0.0.0")
+            AUTHOR=$(yq e '.author' "$file" 2>/dev/null || echo "unknown")
+            DESC=$(yq e '.description' "$file" 2>/dev/null || echo "")
+
+            if [ -n "$NAME" ] && [ "$NAME" != "null" ]; then
+              DESC_TRUNC=$(echo "$DESC" | head -c 80)
+              echo "| $NAME | $VERSION | $AUTHOR | $DESC_TRUNC |" >> SKILLS.md
+            fi
+          done
 
       # -----------------------------
       # COMMIT

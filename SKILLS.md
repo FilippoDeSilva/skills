@@ -2,5 +2,5 @@
 
 | Skill | Version | Author | Description |
 |-------|---------|---------|-------------|
-⚠️ Skipping invalid skill: skills/effoy-backend/SKILL.md
-⚠️ Skipping invalid skill: skills/owasp-security/SKILL.md
+| effoy-backend | 1.0.0 | FilippoDeSilva | Comprehensive guide for the Effoy Core System - a NestJS wedding management application. |
+| owasp-security | 1.0.0 | FilippoDeSilva | Implement secure coding practices following OWASP Top 10. Use when preventing security vulnerabilities. |
