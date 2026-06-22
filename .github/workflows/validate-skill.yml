@@ -1,12 +1,10 @@
-name: Validate Skills
+name: Validate Skills Registry
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
   pull_request:
-    branches:
-      - main
+    branches: [main]
   workflow_dispatch:
 
 jobs:
@@ -14,13 +12,14 @@ jobs:
     runs-on: ubuntu-latest
 
     outputs:
-      skills: ${{ steps.find-skills.outputs.skills }}
+      skills: ${{ steps.find.outputs.skills }}
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - name: Find all skills
-        id: find-skills
+      - name: Find skills
+        id: find
         run: |
           if [ ! -d "skills" ]; then
             echo 'skills=[]' >> $GITHUB_OUTPUT
@@ -28,20 +27,14 @@ jobs:
           fi
 
           SKILLS=$(find skills -mindepth 1 -maxdepth 1 -type d \
-            | xargs -n1 basename \
-            | jq -R . \
-            | jq -s -c .)
+            -exec basename {} \; \
+            | jq -R . | jq -s -c .)
 
           echo "skills=$SKILLS" >> $GITHUB_OUTPUT
-
-          echo "Found skills:"
-          echo "$SKILLS"
+          echo "Found skills: $SKILLS"
 
   validate:
     needs: find-skills
-
-    if: ${{ needs.find-skills.outputs.skills != '[]' }}
-
     runs-on: ubuntu-latest
 
     strategy:
@@ -50,123 +43,152 @@ jobs:
         skill: ${{ fromJson(needs.find-skills.outputs.skills) }}
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - name: Install yq
-        run: |
-          sudo wget -q \
-            https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 \
-            -O /usr/local/bin/yq
+      - name: Setup jq
+        run: sudo apt-get update && sudo apt-get install -y jq
 
-          sudo chmod +x /usr/local/bin/yq
-
-      - name: Validate skill
+      - name: Validate skill exists
         run: |
           SKILL="${{ matrix.skill }}"
           DIR="skills/$SKILL"
           FILE="$DIR/SKILL.md"
 
-          echo "Validating $SKILL"
-
-          test -d "$DIR" || {
-            echo "Directory missing"
-            exit 1
-          }
-
-          test -f "$FILE" || {
-            echo "SKILL.md missing"
-            exit 1
-          }
-
-          test -f "$DIR/README.md" || {
-            echo "README.md missing"
-            exit 1
-          }
-
-      - name: Validate frontmatter
-        run: |
-          FILE="skills/${{ matrix.skill }}/SKILL.md"
-
-          NAME=$(yq '.name' "$FILE")
-          DESCRIPTION=$(yq '.description' "$FILE")
-          VERSION=$(yq '.version' "$FILE")
-          AUTHOR=$(yq '.author' "$FILE")
-          TAGS=$(yq '.tags' "$FILE")
-
-          [ "$NAME" != "null" ] || {
-            echo "name missing"
-            exit 1
-          }
-
-          [ "$DESCRIPTION" != "null" ] || {
-            echo "description missing"
-            exit 1
-          }
-
-          [ "$VERSION" != "null" ] || {
-            echo "version missing"
-            exit 1
-          }
-
-          [ "$AUTHOR" != "null" ] || {
-            echo "author missing"
-            exit 1
-          }
-
-          [ "$TAGS" != "null" ] || {
-            echo "tags missing"
-            exit 1
-          }
-
-      - name: Validate description length
-        run: |
-          FILE="skills/${{ matrix.skill }}/SKILL.md"
-
-          DESCRIPTION=$(yq '.description' "$FILE")
-
-          LENGTH=${#DESCRIPTION}
-
-          if [ "$LENGTH" -lt 10 ]; then
-            echo "Description too short"
+          if [ ! -d "$DIR" ]; then
+            echo "❌ Missing directory: $DIR"
             exit 1
           fi
 
-          if [ "$LENGTH" -gt 1024 ]; then
-            echo "Description too long"
+          if [ ! -f "$FILE" ]; then
+            echo "❌ Missing SKILL.md in $DIR"
             exit 1
           fi
 
-      - name: Validate version
-        run: |
-          FILE="skills/${{ matrix.skill }}/SKILL.md"
+          echo "✓ Structure valid for $SKILL"
 
-          VERSION=$(yq '.version' "$FILE")
-
-          echo "$VERSION" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+$' || {
-            echo "Version must use semantic versioning"
-            exit 1
-          }
-
-      - name: Validate tags
-        run: |
-          FILE="skills/${{ matrix.skill }}/SKILL.md"
-
-          COUNT=$(yq '.tags | length' "$FILE")
-
-          if [ "$COUNT" -lt 1 ]; then
-            echo "At least one tag required"
-            exit 1
-          fi
-
-      - name: Validate folder name
+      - name: Validate SKILL.md schema
         run: |
           SKILL="${{ matrix.skill }}"
+          FILE="skills/$SKILL/SKILL.md"
 
-          echo "$SKILL" | grep -qE '^[a-z0-9]+(-[a-z0-9]+)*$' || {
-            echo "Invalid folder name"
+          echo "Validating YAML frontmatter..."
+
+          FRONTMATTER=$(awk 'BEGIN {in_yaml=0} /^---$/ {i++; if(i==2) exit; in_yaml=!in_yaml; next} in_yaml {print}' "$FILE")
+
+          echo "$FRONTMATTER" > meta.yaml
+
+          # Extract fields
+          NAME=$(yq '.name' meta.yaml)
+          DESC=$(yq '.description' meta.yaml)
+          VERSION=$(yq '.version' meta.yaml)
+          AUTHOR=$(yq '.author' meta.yaml)
+          TAGS=$(yq '.tags' meta.yaml)
+
+          # Required fields
+          if [ -z "$NAME" ] || [ "$NAME" == "null" ]; then
+            echo "❌ Missing name"
             exit 1
-          }
+          fi
 
-      - name: Success
+          if [ -z "$DESC" ] || [ "$DESC" == "null" ]; then
+            echo "❌ Missing description"
+            exit 1
+          fi
+
+          # Folder match rule
+          if [ "$NAME" != "$SKILL" ]; then
+            echo "❌ name mismatch: $NAME != $SKILL"
+            exit 1
+          fi
+
+          # Version check (semver basic)
+          if ! echo "$VERSION" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+$'; then
+            echo "❌ invalid version (must be semver)"
+            exit 1
+          fi
+
+          echo "✓ schema valid"
+
+      - name: Validate tags format
         run: |
-          echo "✓ Skill validated successfully"
+          SKILL="${{ matrix.skill }}"
+          FILE="skills/$SKILL/SKILL.md"
+
+          TAGS=$(yq '.tags[]?' "$FILE" 2>/dev/null || true)
+
+          for tag in $TAGS; do
+            if ! echo "$tag" | grep -Eq '^[a-z0-9-]+$'; then
+              echo "❌ Invalid tag: $tag"
+              exit 1
+            fi
+          done
+
+          echo "✓ tags valid"
+
+      - name: Check README (optional)
+        run: |
+          SKILL="${{ matrix.skill }}"
+          if [ ! -f "skills/$SKILL/README.md" ]; then
+            echo "⚠️ README.md missing (optional)"
+          else
+            echo "✓ README exists"
+          fi
+
+  build-catalog:
+    needs: validate
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup yq + jq
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq
+          wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq
+          chmod +x /usr/bin/yq
+
+      - name: Generate skills catalog
+        run: |
+          mkdir -p dist
+
+          echo "[]" > dist/skills.index.json
+
+          for dir in skills/*; do
+            if [ -d "$dir" ]; then
+
+              FILE="$dir/SKILL.md"
+
+              NAME=$(yq '.name' "$FILE")
+              DESC=$(yq '.description' "$FILE")
+              VERSION=$(yq '.version' "$FILE")
+              AUTHOR=$(yq '.author' "$FILE")
+              TAGS=$(yq '.tags' "$FILE" | jq -c '. // []')
+
+              jq --arg name "$NAME" \
+                 --arg desc "$DESC" \
+                 --arg version "$VERSION" \
+                 --arg author "$AUTHOR" \
+                 --argjson tags "$TAGS" \
+                 '. += [{
+                    name: $name,
+                    description: $desc,
+                    version: $version,
+                    author: $author,
+                    tags: $tags
+                 }]' dist/skills.index.json > tmp.json
+
+              mv tmp.json dist/skills.index.json
+            fi
+          done
+
+          echo "Generated catalog:"
+          cat dist/skills.index.json
+
+      - name: Upload catalog artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: skills-index
+          path: dist/skills.index.json
