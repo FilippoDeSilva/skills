@@ -18,114 +18,29 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install tools
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y jq file
-
-          sudo wget -q \
-            https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 \
-            -O /usr/local/bin/yq
-
-          sudo chmod +x /usr/local/bin/yq
-
-      # -----------------------------
-      # DEBUG STEP: FILE INSPECTION
-      # -----------------------------
-      - name: Debug skill files
-        if: env.DEBUG_SKILLS == 'true'
-        run: |
-          echo "🔍 Checking encoding + structure..."
-
-          for file in skills/*/SKILL.md; do
-            [ -f "$file" ] || continue
-
-            echo "------------------------------"
-            echo "FILE: $file"
-
-            echo "Encoding:"
-            file "$file"
-
-            echo "First lines:"
-            head -n 5 "$file" | cat -A
-
-            echo "Frontmatter markers:"
-            grep -n "^---" "$file" || echo "❌ NO FRONTMATTER FOUND"
-
-            echo ""
-          done
+          sudo apt-get install -y jq
+          cd scripts
+          npm install
 
       # -----------------------------
       # BUILD SKILLS INDEX
       # -----------------------------
-      - name: Generate skills-index.json (DEBUG MODE)
+      - name: Generate skills catalog
         run: |
-          echo "[" > skills-index.json
-          FIRST=true
+          cd scripts
+          node build-catalog.mjs
 
-          for file in skills/*/SKILL.md; do
-            [ -f "$file" ] || continue
-
-            # Strip BOM if present
-            sed -i '1s/^\xEF\xBB\xBF//' "$file"
-
-            # Convert CRLF to LF for yq compatibility
-            sed -i 's/\r$//' "$file"
-
-            echo "🔎 Processing: $file"
-
-            # -------------------------
-            # STEP 1: direct parsing
-            # -------------------------
-            NAME=$(yq e '.name' "$file" 2>/dev/null | tr -d '\r' || true)
-            VERSION=$(yq e '.version' "$file" 2>/dev/null || echo "0.0.0")
-            AUTHOR=$(yq e '.author' "$file" 2>/dev/null || echo "unknown")
-            DESCRIPTION=$(yq e '.description' "$file" 2>/dev/null || echo "")
-            TAGS=$(yq -o=json '.tags // []' "$file" 2>/dev/null || echo "[]")
-
-            # -------------------------
-            # STEP 2: ERROR DIAGNOSIS
-            # -------------------------
-            ERROR_REASON=""
-
-            if [ -z "$NAME" ] || [ "$NAME" = "null" ]; then
-              ERROR_REASON="Missing or unreadable .name (YAML parse failed or corrupted frontmatter)"
-            fi
-
-            # -------------------------
-            # STEP 3: FAIL WITH DIAGNOSIS
-            # -------------------------
-            if [ -n "$ERROR_REASON" ]; then
-              echo "❌ INVALID SKILL: $file"
-              echo "   ├─ reason: $ERROR_REASON"
-              echo "   ├─ hint: check --- markers, BOM, CRLF, or indentation"
-              echo "   └─ skipping..."
-
-              continue
-            fi
-
-            # -------------------------
-            # STEP 4: BUILD JSON
-            # -------------------------
-            JSON=$(jq -n \
-              --arg name "$NAME" \
-              --arg version "$VERSION" \
-              --arg author "$AUTHOR" \
-              --arg description "$DESCRIPTION" \
-              --argjson tags "$TAGS" \
-              '{name:$name, version:$version, author:$author, description:$description, tags:$tags}')
-
-            if [ "$FIRST" = true ]; then
-              FIRST=false
-            else
-              echo "," >> skills-index.json
-            fi
-
-            echo "$JSON" >> skills-index.json
-            echo "✅ OK: $NAME"
-          done
-
-          echo "]" >> skills-index.json
+      - name: Copy catalog to root
+        run: |
+          cp dist/skills.index.json skills-index.json
 
       # -----------------------------
       # GENERATE SKILLS.MD
@@ -137,21 +52,15 @@ jobs:
           echo "| Skill | Version | Author | Description |" >> SKILLS.md
           echo "|-------|---------|---------|-------------|" >> SKILLS.md
 
-          for file in skills/*/SKILL.md; do
-            [ -f "$file" ] || continue
+          # Read from generated catalog
+          for skill in $(jq -r '.[].name' skills-index.json); do
+            NAME=$(jq -r --arg s "$skill" '.[] | select(.name == $s) | .name' skills-index.json)
+            VERSION=$(jq -r --arg s "$skill" '.[] | select(.name == $s) | .version' skills-index.json)
+            AUTHOR=$(jq -r --arg s "$skill" '.[] | select(.name == $s) | .author' skills-index.json)
+            DESC=$(jq -r --arg s "$skill" '.[] | select(.name == $s) | .description' skills-index.json)
 
-            # Convert CRLF to LF for yq compatibility
-            sed -i 's/\r$//' "$file"
-
-            NAME=$(yq e '.name' "$file" 2>/dev/null | tr -d '\r' || true)
-            VERSION=$(yq e '.version' "$file" 2>/dev/null || echo "0.0.0")
-            AUTHOR=$(yq e '.author' "$file" 2>/dev/null || echo "unknown")
-            DESC=$(yq e '.description' "$file" 2>/dev/null || echo "")
-
-            if [ -n "$NAME" ] && [ "$NAME" != "null" ]; then
-              DESC_TRUNC=$(echo "$DESC" | head -c 80)
-              echo "| $NAME | $VERSION | $AUTHOR | $DESC_TRUNC |" >> SKILLS.md
-            fi
+            DESC_TRUNC=$(echo "$DESC" | head -c 80)
+            echo "| $NAME | $VERSION | $AUTHOR | $DESC_TRUNC |" >> SKILLS.md
           done
 
       # -----------------------------
