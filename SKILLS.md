@@ -2,5 +2,5 @@
 
 | Skill | Version | Author | Description |
 |-------|---------|---------|-------------|
-⚠️ Skipping invalid skill file: skills/effoy-backend/SKILL.md
-⚠️ Skipping invalid skill file: skills/owasp-security/SKILL.md
+⚠️ Skipping invalid skill: skills/effoy-backend/SKILL.md
+⚠️ Skipping invalid skill: skills/owasp-security/SKILL.md
