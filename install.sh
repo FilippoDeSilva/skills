@@ -83,16 +83,29 @@ if [ ! -d "$SKILLS_DIR" ]; then
   exit 1
 fi
 
-# Find all skill directories
+# Find all skill directories (including nested)
 SKILLS=()
-for skill_dir in "$SKILLS_DIR"/*/; do
-  if [ -d "$skill_dir" ]; then
-    skill_name=$(basename "$skill_dir")
-    if [ -f "$skill_dir/SKILL.md" ]; then
-      SKILLS+=("$skill_name")
+find_skill_dirs() {
+  local dir="$1"
+  local base="$2"
+  
+  for entry in "$dir"/*; do
+    if [ -d "$entry" ]; then
+      local skill_name=$(basename "$entry")
+      local skill_file="$entry/SKILL.md"
+      
+      if [ -f "$skill_file" ]; then
+        local relative_path="${base:+$base/}$skill_name"
+        SKILLS+=("$relative_path")
+      else
+        # Recursively search subdirectories
+        find_skill_dirs "$entry" "${base:+$base/}$skill_name"
+      fi
     fi
-  fi
-done
+  done
+}
+
+find_skill_dirs "$SKILLS_DIR" ""
 
 if [ ${#SKILLS[@]} -eq 0 ]; then
   err "No skills found with SKILL.md files"
@@ -113,14 +126,22 @@ for skill in "${SKILLS[@]}"; do
     fi
   done
   
+  # Create parent directory if nested
+  if [[ "$skill" == */* ]]; then
+    PARENT_DIR=$(dirname "$skill")
+    for target_dir in "$HOME/.claude/skills" "$HOME/.copilot/skills" "$HOME/.agents/skills"; do
+      mkdir -p "$target_dir/$PARENT_DIR"
+    done
+  fi
+  
   # Copy skill to all skill directories
-  cp -R "$SKILL_DIR" "$HOME/.claude/skills/"
+  cp -R "$SKILL_DIR" "$HOME/.claude/skills/$skill"
   ok "$skill installed at ~/.claude/skills/$skill"
   
-  cp -R "$SKILL_DIR" "$HOME/.copilot/skills/"
+  cp -R "$SKILL_DIR" "$HOME/.copilot/skills/$skill"
   ok "$skill installed at ~/.copilot/skills/$skill"
   
-  cp -R "$SKILL_DIR" "$HOME/.agents/skills/"
+  cp -R "$SKILL_DIR" "$HOME/.agents/skills/$skill"
   ok "$skill installed at ~/.agents/skills/$skill"
 done
 

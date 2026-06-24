@@ -7,8 +7,9 @@
 5. **Flutter**: Flutter skills for mobile development.
 6. **Websocket**: Websocket skills for real-time communication.
 7. **Read-Team**: Read-Team skills for cybersecurity and threat analysis.
-8. **Ponytail**: YAGNI (You Aren't Gonna Need It) principles for software development.
-9. **Docker**: Docker skills for containerization.
+8. **Pentest**: Pentest skills for cybersecurity, penetration testing, and CVSS scoring.
+9. **Ponytail**: YAGNI (You Aren't Gonna Need It) principles for software development.
+10. **Docker**: Docker skills for containerization.
 
 ## Agent installation for agentic development
 
