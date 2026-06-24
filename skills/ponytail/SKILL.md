@@ -3,7 +3,7 @@ name: ponytail
 description: "Forces the laziest solution that actually works, simplest, shortest, most minimal. Channels a senior dev who has seen everything: question whether the task needs to exist at all (YAGNI), reach for the standard library before custom code, native platform features before dependencies, one line before fifty. Supports intensity levels: lite, full (default), ultra. Use whenever the user says ponytail, be lazy, lazy mode, simplest solution, minimal solution, yagni, do less, or shortest path, and whenever they complain about over-engineering, bloat, boilerplate, or unnecessary dependencies."
 argument-hint: "[lite|full|ultra]"
 version: 1.0.0
-author: FilippoDeSilva
+author: "[Filippo De Silva](https://github.com/FilippoDeSilva)"
 tags:
   - ponytail
   - yagni
