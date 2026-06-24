@@ -47,84 +47,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install tools
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y jq
-          sudo wget -q https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/local/bin/yq
-          sudo chmod +x /usr/local/bin/yq
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
 
-      - name: Validate structure
+      - name: Validate skill
         run: |
           SKILL="${{ matrix.skill }}"
           DIR="skills/$SKILL"
-          FILE="$DIR/SKILL.md"
-
-          if [ ! -d "$DIR" ]; then
-            echo "❌ Missing directory: $DIR"
-            exit 1
-          fi
-
-          if [ ! -f "$FILE" ]; then
-            echo "❌ Missing SKILL.md"
-            exit 1
-          fi
-
-          echo "✓ structure valid"
-
-      - name: Validate YAML schema (tolerant)
-        run: |
-          SKILL="${{ matrix.skill }}"
-          FILE="skills/$SKILL/SKILL.md"
-          SKILL_NAME=$(basename "$SKILL")
-
-          FRONTMATTER=$(awk '
-            BEGIN {in_yaml=0; c=0}
-            /^---$/ {c++; if(c==1){in_yaml=1; next} if(c==2){exit}}
-            in_yaml {print}
-          ' "$FILE")
-
-          TMP=$(mktemp)
-          echo "$FRONTMATTER" > "$TMP"
-
-          NAME=$(yq -r '.name // ""' "$TMP" 2>/dev/null)
-          VERSION=$(yq -r '.version // "0.0.0"' "$TMP" 2>/dev/null)
-          AUTHOR=$(yq -r '.author // "unknown"' "$TMP" 2>/dev/null)
-
-          if [ -z "$NAME" ]; then
-            echo "❌ Missing name"
-            exit 1
-          fi
-
-          if [ "$NAME" != "$SKILL_NAME" ]; then
-            echo "❌ name mismatch: $NAME != $SKILL_NAME"
-            exit 1
-          fi
-
-          if ! echo "$VERSION" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+$'; then
-            echo "❌ invalid version"
-            exit 1
-          fi
-
-          rm -f "$TMP"
-
-          echo "✓ schema valid"
-
-      - name: Validate tags (optional)
-        run: |
-          SKILL="${{ matrix.skill }}"
-          FILE="skills/$SKILL/SKILL.md"
-
-          TAGS=$(yq -r '.tags[]? // empty' "$FILE" 2>/dev/null || true)
-
-          for tag in $TAGS; do
-            if ! echo "$tag" | grep -Eq '^[a-z0-9-]+$'; then
-              echo "❌ Invalid tag: $tag"
-              exit 1
-            fi
-          done
-
-          echo "✓ tags valid"
+          node scripts/validate-skill.mjs "$DIR"
 
       - name: Optional README check
         run: |
