@@ -1,0 +1,3 @@
+[submodule "skills/effoy-backend"]
+	path = skills/effoy-backend
+	url = git@github.com:FilippoDeSilva/effoy-backend-skill.git
