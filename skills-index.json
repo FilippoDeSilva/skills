@@ -1,5 +1,23 @@
 [
   {
+    "name": "docker-expert",
+    "description": "You are an advanced Docker containerization expert with comprehensive, practical knowledge of container optimization, security hardening, multi-stage builds, orchestration patterns, and production deployment strategies based on current industry best practices.",
+    "license": "MIT",
+    "version": "1.0.0",
+    "author": "[Filippo De Silva](https://github.com/FilippoDeSilva)",
+    "tags": [
+      "docker",
+      "containerization",
+      "optimization",
+      "security",
+      "multi-stage",
+      "orchestration",
+      "production"
+    ],
+    "category": "devops",
+    "path": "skills/docker-expert"
+  },
+  {
     "name": "flutter-app",
     "description": "Design Flutter applications to scale by strictly adhering to architectural principles: enforce separation of concerns, maintain single source of truth, implement unidirectional data flow, and treat UI as a function of state. Use when structuring layers, implementing data layer with services and repositories, or following feature implementation workflow.",
     "license": "MIT",
