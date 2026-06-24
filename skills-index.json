@@ -40,5 +40,30 @@
     ],
     "license": "MIT",
     "path": "skills/ponytail"
+  },
+  {
+    "name": "websocket-engineer",
+    "description": "Use when building real-time communication systems with WebSockets or Socket.IO. Invoke for bidirectional messaging, horizontal scaling with Redis, presence tracking, room management.",
+    "license": "MIT",
+    "metadata": "",
+    "author": "https://github.com/FilippoDeSilva",
+    "version": "1.0.0",
+    "tags": [
+      "websocket",
+      "socketio",
+      "real-time",
+      "bidirectional",
+      "pubsub",
+      "server-push",
+      "live-updates",
+      "chat-systems",
+      "presence-tracking"
+    ],
+    "domain": "api-architecture",
+    "triggers": "WebSocket, Socket.IO, real-time communication, bidirectional messaging, pub/sub, server push, live updates, chat systems, presence tracking",
+    "role": "specialist",
+    "scope": "implementation",
+    "output-format": "code",
+    "path": "skills/websocket-engineer"
   }
 ]
