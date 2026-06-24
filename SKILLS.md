@@ -2,7 +2,6 @@
 
 | Skill | Version | Author | Description |
 |-------|---------|---------|-------------|
-| effoy-backend | 1.0.0 | [Filippo De Silva](https://github.com/FilippoDeSilva) | Comprehensive guide for the Effoy Core System - a NestJS wedding management appl |
 | flutter-app | 1.0.0 | [Filippo De Silva](https://github.com/FilippoDeSilva) | Design Flutter applications to scale by strictly adhering to architectural princ |
 | nestjs-api-standards | 1.0.0 | [Filippo De Silva](https://github.com/FilippoDeSilva) | Create standardized API response envelopes, paginated endpoints, and error inter |
 | nestjs-architecture | 1.0.0 | [Filippo De Silva](https://github.com/FilippoDeSilva) | Design NestJS module boundaries, provider scope, and request pipeline choices. U |

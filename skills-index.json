@@ -1,22 +1,5 @@
 [
   {
-    "name": "effoy-backend",
-    "description": "Comprehensive guide for the Effoy Core System - a NestJS wedding management application. Use when working on this project, implementing new features, refactoring code, or troubleshooting issues. Covers architecture, configuration, utilities, database (PostgreSQL + Prisma), authentication, background jobs, and development workflows.",
-    "license": "MIT",
-    "version": "1.0.0",
-    "author": "[Filippo De Silva](https://github.com/FilippoDeSilva)",
-    "tags": [
-      "nestjs",
-      "prisma",
-      "postgres",
-      "redis",
-      "bullmq",
-      "rbac",
-      "websocket"
-    ],
-    "path": "skills/effoy-backend"
-  },
-  {
     "name": "flutter-app",
     "description": "Design Flutter applications to scale by strictly adhering to architectural principles: enforce separation of concerns, maintain single source of truth, implement unidirectional data flow, and treat UI as a function of state. Use when structuring layers, implementing data layer with services and repositories, or following feature implementation workflow.",
     "license": "MIT",
