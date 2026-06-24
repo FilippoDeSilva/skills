@@ -18,27 +18,48 @@ if (!fs.existsSync(skillsDir)) {
   process.exit(0);
 }
 
-const skillFolders = fs
-  .readdirSync(skillsDir)
-  .filter((f) => fs.statSync(path.join(skillsDir, f)).isDirectory());
+// Recursively find all directories containing SKILL.md
+function findSkillDirs(dir, base = "") {
+  const entries = fs.readdirSync(dir, { withFileTypes: true });
+  const skillDirs = [];
+
+  for (const entry of entries) {
+    const fullPath = path.join(dir, entry.name);
+    const relativePath = base ? path.join(base, entry.name) : entry.name;
+
+    if (entry.isDirectory()) {
+      const skillFile = path.join(fullPath, "SKILL.md");
+      if (fs.existsSync(skillFile)) {
+        skillDirs.push({ path: fullPath, relativePath, folderName: entry.name });
+      } else {
+        // Recursively search subdirectories
+        skillDirs.push(...findSkillDirs(fullPath, relativePath));
+      }
+    }
+  }
+
+  return skillDirs;
+}
+
+const skillFolders = findSkillDirs(skillsDir);
 
 const catalog = [];
 
-for (const folder of skillFolders) {
-  const filePath = path.join(skillsDir, folder, "SKILL.md");
+for (const skill of skillFolders) {
+  const filePath = path.join(skill.path, "SKILL.md");
 
   if (!fs.existsSync(filePath)) {
-    console.error(`❌ Missing SKILL.md in ${folder}`);
+    console.error(`❌ Missing SKILL.md in ${skill.relativePath}`);
     process.exit(1);
   }
 
-  const content = fs.readFileSync(filePath, "utf-8");
+  const content = fs.readFileSync(filePath, "utf8");
 
   // extract YAML frontmatter (handle potential BOM)
   const match = content.replace(/^﻿/, '').match(/^---([\s\S]*?)---/);
 
   if (!match) {
-    console.error(`❌ Missing frontmatter in ${folder}`);
+    console.error(`❌ Missing frontmatter in ${skill.relativePath}`);
     process.exit(1);
   }
 
@@ -91,20 +112,20 @@ for (const folder of skillFolders) {
   const valid = validate(meta);
 
   if (!valid) {
-    console.error(`❌ Schema error in ${folder}:`);
+    console.error(`❌ Schema error in ${skill.relativePath}:`);
     console.error(validate.errors);
     process.exit(1);
   }
 
   // folder-name rule
-  if (meta.name !== folder) {
-    console.error(`❌ name mismatch: ${meta.name} != ${folder}`);
+  if (meta.name !== skill.folderName) {
+    console.error(`❌ name mismatch: ${meta.name} != ${skill.folderName}`);
     process.exit(1);
   }
 
   catalog.push({
     ...meta,
-    path: `skills/${folder}`
+    path: `skills/${skill.relativePath.replace(/\\/g, '/')}`
   });
 }
 
