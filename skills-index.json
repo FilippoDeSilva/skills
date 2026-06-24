@@ -37,6 +37,423 @@
     "path": "skills/flutter-app"
   },
   {
+    "name": "nestjs-api-standards",
+    "description": "Create standardized API response envelopes, paginated endpoints, and error interceptors in NestJS. Use when implementing response wrappers, pagination DTOs, or global error formats.",
+    "license": "MIT",
+    "version": "1.0.0",
+    "author": "[Filippo De Silva](https://github.com/FilippoDeSilva)",
+    "tags": [
+      "nestjs",
+      "api",
+      "response",
+      "pagination",
+      "error"
+    ],
+    "metadata": "",
+    "triggers": "",
+    "files": "",
+    "keywords": "",
+    "path": "skills/nestjs/nestjs-api-standards"
+  },
+  {
+    "name": "nestjs-architecture",
+    "description": "Design NestJS module boundaries, provider scope, and request pipeline choices. Use when structuring modules, placing guards/pipes/interceptors, or reviewing provider lifetime in NestJS.",
+    "license": "MIT",
+    "version": "1.0.0",
+    "author": "[Filippo De Silva](https://github.com/FilippoDeSilva)",
+    "tags": [
+      "nestjs",
+      "architecture",
+      "module",
+      "provider",
+      "pipeline"
+    ],
+    "metadata": "",
+    "triggers": "",
+    "files": "",
+    "keywords": "",
+    "path": "skills/nestjs/nestjs-architecture"
+  },
+  {
+    "name": "nestjs-bullmq",
+    "description": "Implement BullMQ job workflows in NestJS. Use when building queue processors, redis-throttler, Upstash limits, idle polling, stalled jobs, and retention policies.",
+    "license": "MIT",
+    "version": "1.0.0",
+    "author": "[Filippo De Silva](https://github.com/FilippoDeSilva)",
+    "tags": [
+      "nestjs",
+      "bullmq",
+      "queue",
+      "background-job",
+      "worker",
+      "processor"
+    ],
+    "metadata": "",
+    "triggers": "",
+    "files": "",
+    "keywords": "",
+    "path": "skills/nestjs/nestjs-bullmq"
+  },
+  {
+    "name": "nestjs-caching",
+    "description": "Implement multi-level caching, invalidation patterns, and stampede protection in NestJS. Use when adding Redis caching layers, configuring cache-manager interceptors, implementing stale-while-revalidate, or preventing cache stampedes in NestJS services.",
+    "license": "MIT",
+    "version": "1.0.0",
+    "author": "[Filippo De Silva](https://github.com/FilippoDeSilva)",
+    "tags": [
+      "nestjs",
+      "caching",
+      "redis",
+      "cache-manager",
+      "stale-while-revalidate"
+    ],
+    "metadata": "",
+    "triggers": "",
+    "files": "",
+    "keywords": "",
+    "path": "skills/nestjs/nestjs-caching"
+  },
+  {
+    "name": "nestjs-configuration",
+    "description": "Environment variables validation and ConfigModule setup. Use when validating environment variables with Joi/Zod or configuring ConfigModule in NestJS.",
+    "license": "MIT",
+    "version": "1.0.0",
+    "author": "[Filippo De Silva](https://github.com/FilippoDeSilva)",
+    "tags": [
+      "nestjs",
+      "configuration",
+      "config",
+      "env",
+      "validation"
+    ],
+    "metadata": "",
+    "triggers": "",
+    "files": "",
+    "keywords": "",
+    "path": "skills/nestjs/nestjs-configuration"
+  },
+  {
+    "name": "nestjs-controllers-services",
+    "description": "Separate Controllers from Services and build Custom Decorators in NestJS. Use when defining NestJS controllers, services, or custom parameter decorators.",
+    "license": "MIT",
+    "version": "1.0.0",
+    "author": "[Filippo De Silva](https://github.com/FilippoDeSilva)",
+    "tags": [
+      "nestjs",
+      "controllers",
+      "services",
+      "decorators"
+    ],
+    "metadata": "",
+    "triggers": "",
+    "files": "",
+    "keywords": "",
+    "path": "skills/nestjs/nestjs-controllers-services"
+  },
+  {
+    "name": "nestjs-database",
+    "description": "Implement data access patterns, Scaling, Migrations, and ORM selection in NestJS. Use when implementing TypeORM/Prisma repositories, migrations, or database patterns in NestJS.",
+    "license": "MIT",
+    "version": "1.0.0",
+    "author": "[Filippo De Silva](https://github.com/FilippoDeSilva)",
+    "tags": [
+      "nestjs",
+      "database",
+      "typeorm",
+      "prisma",
+      "migration",
+      "repository"
+    ],
+    "metadata": "",
+    "triggers": "",
+    "files": "",
+    "keywords": "",
+    "path": "skills/nestjs/nestjs-database"
+  },
+  {
+    "name": "nestjs-deployment",
+    "description": "Containerize NestJS apps with multi-stage Docker builds, tune Node.js memory, and implement graceful shutdown hooks. Use when writing Dockerfiles, configuring K8s deployments, or adding shutdown hooks for NestJS.",
+    "license": "MIT",
+    "version": "1.0.0",
+    "author": "[Filippo De Silva](https://github.com/FilippoDeSilva)",
+    "tags": [
+      "nestjs",
+      "deployment",
+      "docker",
+      "kubernetes",
+      "helm",
+      "shutdown",
+      "memory"
+    ],
+    "metadata": "",
+    "triggers": "",
+    "files": "",
+    "keywords": "",
+    "path": "skills/nestjs/nestjs-deployment"
+  },
+  {
+    "name": "nestjs-documentation",
+    "description": "Automate Swagger/OpenAPI documentation and standardize API response schemas in NestJS. Use when generating OpenAPI specs, documenting paginated or generic responses, configuring the Nest CLI Swagger plugin, or publishing versioned API docs.",
+    "license": "MIT",
+    "version": "1.0.0",
+    "author": "[Filippo De Silva](https://github.com/FilippoDeSilva)",
+    "tags": [
+      "nestjs",
+      "documentation",
+      "swagger",
+      "openapi",
+      "api",
+      "dto"
+    ],
+    "metadata": "",
+    "triggers": "",
+    "files": "",
+    "keywords": "",
+    "path": "skills/nestjs/nestjs-documentation"
+  },
+  {
+    "name": "nestjs-error-handling",
+    "description": "Implement Global Exception Filters and standard error formats in NestJS. Use when implementing global exception filters or standardizing error responses in NestJS.",
+    "license": "MIT",
+    "version": "1.0.0",
+    "author": "[Filippo De Silva](https://github.com/FilippoDeSilva)",
+    "tags": [
+      "nestjs",
+      "error-handling",
+      "exception-filter",
+      "http-exception",
+      "logging"
+    ],
+    "metadata": "",
+    "triggers": "",
+    "files": "",
+    "keywords": "",
+    "path": "skills/nestjs/nestjs-error-handling"
+  },
+  {
+    "name": "nestjs-file-uploads",
+    "description": "Validate and stream file uploads securely with Validation and S3 streaming in NestJS. Use when implementing secure file uploads, validation, or S3 streaming in NestJS.",
+    "license": "MIT",
+    "version": "1.0.0",
+    "author": "[Filippo De Silva](https://github.com/FilippoDeSilva)",
+    "tags": [
+      "nestjs",
+      "file-uploads",
+      "validation",
+      "s3",
+      "streaming"
+    ],
+    "metadata": "",
+    "triggers": "",
+    "files": "",
+    "keywords": "",
+    "path": "skills/nestjs/nestjs-file-uploads"
+  },
+  {
+    "name": "nestjs-notification",
+    "description": "Build dual-write notification services with database persistence and FCM push delivery in NestJS. Use when creating notification entities, sending push via FCM, or implementing in-app notification feeds.",
+    "license": "MIT",
+    "version": "1.0.0",
+    "author": "[Filippo De Silva](https://github.com/FilippoDeSilva)",
+    "tags": [
+      "nestjs",
+      "notification",
+      "fcm",
+      "push",
+      "in-app",
+      "dual-write"
+    ],
+    "metadata": "",
+    "triggers": "",
+    "files": "",
+    "keywords": "",
+    "path": "skills/nestjs/nestjs-notification"
+  },
+  {
+    "name": "nestjs-observability",
+    "description": "Configure structured logging with Pino, Prometheus metrics, and health checks for NestJS services. Use when adding JSON logging, request tracing with correlation IDs, Prometheus metric endpoints, or liveness/readiness health checks.",
+    "license": "MIT",
+    "version": "1.0.0",
+    "author": "[Filippo De Silva](https://github.com/FilippoDeSilva)",
+    "tags": [
+      "nestjs",
+      "observability",
+      "pino",
+      "prometheus",
+      "health-check",
+      "correlation-id"
+    ],
+    "metadata": "",
+    "triggers": "",
+    "files": "",
+    "keywords": "",
+    "path": "skills/nestjs/nestjs-observability"
+  },
+  {
+    "name": "nestjs-performance",
+    "description": "Optimize NestJS throughput with Fastify adapter, singleton scope enforcement, compression, and query projections. Use when switching to Fastify, diagnosing request-scoped bottlenecks, or profiling API overhead.",
+    "license": "MIT",
+    "version": "1.0.0",
+    "author": "[Filippo De Silva](https://github.com/FilippoDeSilva)",
+    "tags": [
+      "nestjs",
+      "performance",
+      "fastify",
+      "compression",
+      "singleton",
+      "request-scope"
+    ],
+    "metadata": "",
+    "triggers": "",
+    "files": "",
+    "keywords": "",
+    "path": "skills/nestjs/nestjs-performance"
+  },
+  {
+    "name": "nestjs-real-time",
+    "description": "Implement WebSocket gateways with Socketio and Server-Sent Events endpoints in NestJS. Use when building chat features, live feeds, or choosing between WebSocket and SSE for real-time communication.",
+    "license": "MIT",
+    "version": "1.0.0",
+    "author": "[Filippo De Silva](https://github.com/FilippoDeSilva)",
+    "tags": [
+      "nestjs",
+      "real-time",
+      "websocket",
+      "sse",
+      "socketio",
+      "fastify"
+    ],
+    "metadata": "",
+    "triggers": "",
+    "files": "",
+    "keywords": "",
+    "path": "skills/nestjs/nestjs-real-time"
+  },
+  {
+    "name": "nestjs-scheduling",
+    "description": "Implement distributed cron jobs with Redis-based locking and BullMQ offloading in NestJS. Use when adding @Cron scheduled tasks, preventing duplicate runs across pods, or delegating heavy work to queue workers.",
+    "license": "MIT",
+    "version": "1.0.0",
+    "author": "[Filippo De Silva](https://github.com/FilippoDeSilva)",
+    "tags": [
+      "nestjs",
+      "scheduling",
+      "cron",
+      "redis",
+      "bullmq",
+      "distributed-locking"
+    ],
+    "metadata": "",
+    "triggers": "",
+    "files": "",
+    "keywords": "",
+    "path": "skills/nestjs/nestjs-scheduling"
+  },
+  {
+    "name": "nestjs-search",
+    "description": "Integrate Elasticsearch and implement search index Sync patterns in NestJS. Use when integrating Elasticsearch or implementing search index sync in NestJS.",
+    "license": "MIT",
+    "version": "1.0.0",
+    "author": "[Filippo De Silva](https://github.com/FilippoDeSilva)",
+    "tags": [
+      "nestjs",
+      "search",
+      "elasticsearch",
+      "full-text",
+      "cqrs",
+      "synchronization"
+    ],
+    "metadata": "",
+    "triggers": "",
+    "files": "",
+    "keywords": "",
+    "path": "skills/nestjs/nestjs-search"
+  },
+  {
+    "name": "nestjs-security",
+    "description": "Implement JWT authentication, RBAC guards, Helmet hardening, and Argon2 hashing in NestJS. Use when adding auth strategies, role-based access control, CSRF protection, or security headers.",
+    "license": "MIT",
+    "version": "1.0.0",
+    "author": "[Filippo De Silva](https://github.com/FilippoDeSilva)",
+    "tags": [
+      "nestjs",
+      "security",
+      "jwt",
+      "rbac",
+      "helmet",
+      "argon2",
+      "passport",
+      "csrf"
+    ],
+    "metadata": "",
+    "triggers": "",
+    "files": "",
+    "keywords": "",
+    "path": "skills/nestjs/nestjs-security"
+  },
+  {
+    "name": "nestjs-security-isolation",
+    "description": "Enforce multi-tenant isolation and PostgreSQL Row Level Security in NestJS. Use when enforcing tenant isolation or PostgreSQL RLS in NestJS multi-tenant apps.",
+    "license": "MIT",
+    "version": "1.0.0",
+    "author": "[Filippo De Silva](https://github.com/FilippoDeSilva)",
+    "tags": [
+      "nestjs",
+      "security",
+      "isolation",
+      "rls",
+      "postgresql",
+      "multi-tenant"
+    ],
+    "metadata": "",
+    "triggers": "",
+    "files": "",
+    "keywords": "",
+    "path": "skills/nestjs/nestjs-security-isolation"
+  },
+  {
+    "name": "nestjs-testing",
+    "description": "Write Unit and E2E tests with Jest, mocking strategies, and database isolation in NestJS. Use when writing NestJS unit tests, E2E tests with supertest, or mock providers.",
+    "license": "MIT",
+    "version": "1.0.0",
+    "author": "[Filippo De Silva](https://github.com/FilippoDeSilva)",
+    "tags": [
+      "nestjs",
+      "testing",
+      "jest",
+      "supertest",
+      "e2e",
+      "unit",
+      "mock"
+    ],
+    "metadata": "",
+    "triggers": "",
+    "files": "",
+    "keywords": "",
+    "path": "skills/nestjs/nestjs-testing"
+  },
+  {
+    "name": "nestjs-transport",
+    "description": "Configure gRPC, RabbitMQ, and monorepo contract patterns for NestJS microservices. Use when setting up gRPC service-to-service calls, RabbitMQ event-driven messaging, shared contract libraries, or microservice exception handling in NestJS.",
+    "license": "MIT",
+    "version": "1.0.0",
+    "author": "[Filippo De Silva](https://github.com/FilippoDeSilva)",
+    "tags": [
+      "nestjs",
+      "transport",
+      "grpc",
+      "rabbitmq",
+      "microservices",
+      "monorepo",
+      "contracts"
+    ],
+    "metadata": "",
+    "triggers": "",
+    "files": "",
+    "keywords": "",
+    "path": "skills/nestjs/nestjs-transport"
+  },
+  {
     "name": "nextjs-app-router",
     "description": "Configure file-system routing with nested layouts, route groups, parallel routes, and error boundaries in Next.js App Router. Use when creating page routes, adding loading/error states, or organizing routes with groups and dynamic segments.",
     "license": "MIT",
@@ -436,6 +853,27 @@
       "nestjs"
     ],
     "path": "skills/owasp-security"
+  },
+  {
+    "name": "pentest",
+    "description": "PTES-aligned adversarial security audit for backend, frontend, and mobile applications. Produces a CVSS-scored Hacker Report with verified PoCs and phased remediation.",
+    "license": "MIT",
+    "version": "1.0.0",
+    "author": "[Filippo De Silva](https://github.com/FilippoDeSilva)",
+    "tags": [
+      "pentest",
+      "security",
+      "audit",
+      "redteam",
+      "ptex",
+      "cvss",
+      "poc",
+      "remediation"
+    ],
+    "metadata": "",
+    "triggers": "",
+    "keywords": "",
+    "path": "skills/pentest"
   },
   {
     "name": "ponytail",
