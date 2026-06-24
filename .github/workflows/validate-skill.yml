@@ -26,8 +26,9 @@ jobs:
             exit 0
           fi
 
-          SKILLS=$(find skills -mindepth 1 -maxdepth 1 -type d \
-            -exec basename {} \; \
+          SKILLS=$(find skills -type f -name "SKILL.md" \
+            -exec dirname {} \; \
+            | sed 's|^skills/||' \
             | jq -R . | jq -s -c .)
 
           echo "skills=$SKILLS" >> $GITHUB_OUTPUT
@@ -75,6 +76,7 @@ jobs:
         run: |
           SKILL="${{ matrix.skill }}"
           FILE="skills/$SKILL/SKILL.md"
+          SKILL_NAME=$(basename "$SKILL")
 
           FRONTMATTER=$(awk '
             BEGIN {in_yaml=0; c=0}
@@ -94,8 +96,8 @@ jobs:
             exit 1
           fi
 
-          if [ "$NAME" != "$SKILL" ]; then
-            echo "❌ name mismatch: $NAME != $SKILL"
+          if [ "$NAME" != "$SKILL_NAME" ]; then
+            echo "❌ name mismatch: $NAME != $SKILL_NAME"
             exit 1
           fi
 
