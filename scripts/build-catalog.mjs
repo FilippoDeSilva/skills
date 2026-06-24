@@ -46,6 +46,11 @@ const skillFolders = findSkillDirs(skillsDir);
 const catalog = [];
 
 for (const skill of skillFolders) {
+  // Skip private skills
+  if (skill.folderName === 'effoy-backend') {
+    continue;
+  }
+
   const filePath = path.join(skill.path, "SKILL.md");
 
   if (!fs.existsSync(filePath)) {
