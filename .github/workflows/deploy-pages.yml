@@ -1,0 +1,130 @@
+# name: Deploy to GitHub Pages
+
+# on:
+#   push:
+#     branches: [main]
+#   workflow_dispatch:
+
+# permissions:
+#   contents: write
+#   pages: write
+#   id-token: write
+
+# concurrency:
+#   group: "pages"
+#   cancel-in-progress: false
+
+# jobs:
+#   build:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Checkout
+#         uses: actions/checkout@v4
+
+#       - name: Install Node.js
+#         uses: actions/setup-node@v4
+#         with:
+#           node-version: '20'
+
+#       - name: Install dependencies
+#         run: |
+#           sudo apt-get update
+#           sudo apt-get install -y jq
+#           cd scripts
+#           npm install
+
+#       - name: Generate skills catalog
+#         run: |
+#           node scripts/build-catalog.mjs
+
+#       - name: Generate HTML page
+#         run: |
+#           cat > index.html << 'EOF'
+#           <!DOCTYPE html>
+#           <html lang="en">
+#           <head>
+#             <meta charset="UTF-8">
+#             <meta name="viewport" content="width=device-width, initial-scale=1.0">
+#             <title>Filippo's Skills</title>
+#             <style>
+#               * { margin: 0; padding: 0; box-sizing: border-box; }
+#               body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0d1117; color: #c9d1d9; line-height: 1.6; }
+#               .container { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
+#               h1 { font-size: 2.5rem; margin-bottom: 10px; color: #58a6ff; }
+#               .subtitle { color: #8b949e; margin-bottom: 40px; }
+#               .skills-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 20px; }
+#               .skill-card { background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 24px; transition: transform 0.2s, border-color 0.2s; }
+#               .skill-card:hover { transform: translateY(-4px); border-color: #58a6ff; }
+#               .skill-name { font-size: 1.5rem; font-weight: 600; color: #58a6ff; margin-bottom: 8px; }
+#               .skill-version { font-size: 0.875rem; color: #8b949e; margin-bottom: 12px; }
+#               .skill-author { font-size: 0.875rem; color: #8b949e; margin-bottom: 12px; }
+#               .skill-description { color: #c9d1d9; margin-bottom: 16px; font-size: 0.95rem; }
+#               .tags { display: flex; flex-wrap: wrap; gap: 8px; }
+#               .tag { background: #21262d; color: #58a6ff; padding: 4px 12px; border-radius: 16px; font-size: 0.75rem; border: 1px solid #30363d; }
+#               .footer { margin-top: 60px; text-align: center; color: #8b949e; font-size: 0.875rem; }
+#               a { color: #58a6ff; text-decoration: none; }
+#               a:hover { text-decoration: underline; }
+#             </style>
+#           </head>
+#           <body>
+#             <div class="container">
+#               <h1>Filippo's Skills</h1>
+#               <p class="subtitle">My personal skills for agentic development</p>
+#               <div class="skills-grid">
+#           EOF
+
+#           # Add skill cards
+#           for skill in $(jq -r '.[].name' dist/skills.index.json); do
+#             NAME=$(jq -r --arg s "$skill" '.[] | select(.name == $s) | .name' dist/skills.index.json)
+#             VERSION=$(jq -r --arg s "$skill" '.[] | select(.name == $s) | .version' dist/skills.index.json)
+#             AUTHOR=$(jq -r --arg s "$skill" '.[] | select(.name == $s) | .author' dist/skills.index.json)
+#             DESC=$(jq -r --arg s "$skill" '.[] | select(.name == $s) | .description' dist/skills.index.json)
+#             TAGS=$(jq -r --arg s "$skill" '.[] | select(.name == $s) | .tags[]' dist/skills.index.json)
+
+#             cat >> index.html << EOF
+#                 <div class="skill-card">
+#                   <div class="skill-name">$NAME</div>
+#                   <div class="skill-version">v$VERSION</div>
+#                   <div class="skill-author">by $AUTHOR</div>
+#                   <div class="skill-description">$DESC</div>
+#                   <div class="tags">
+#           EOF
+
+#             for tag in $TAGS; do
+#               echo "                    <span class=\"tag\">$tag</span>" >> index.html
+#             done
+
+#             cat >> index.html << EOF
+#                   </div>
+#                 </div>
+#           EOF
+#           done
+
+#           cat >> index.html << 'EOF'
+#               </div>
+#               <div class="footer">
+#                 <p>Generated from <a href="https://github.com/FilippoDeSilva/skills">FilippoDeSilva/skills</a></p>
+#               </div>
+#             </div>
+#           </body>
+#           </html>
+#           EOF
+
+#       - name: Setup Pages
+#         uses: actions/configure-pages@v4
+
+#       - name: Upload artifact
+#         uses: actions/upload-pages-artifact@v3
+#         with:
+#           path: 'index.html'
+
+#   deploy:
+#     environment:
+#       name: github-pages
+#       url: ${{ steps.deployment.outputs.page_url }}
+#     runs-on: ubuntu-latest
+#     needs: build
+#     steps:
+#       - name: Deploy to GitHub Pages
+#         id: deployment
+#         uses: actions/deploy-pages@v4
