@@ -26,7 +26,7 @@ jobs:
             exit 0
           fi
 
-          SKILLS=$(find skills -type f -name "SKILL.md" \
+          SKILLS=$(find skills -mindepth 2 -type f -name "SKILL.md" \
             -exec dirname {} \; \
             | sed 's|^skills/||' \
             | jq -R . | jq -s -c .)

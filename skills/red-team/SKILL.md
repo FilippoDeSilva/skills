@@ -12,12 +12,12 @@ tags:
 metadata:
   triggers:
     keywords:
-    - logic hacker
-    - business logic flaw
+    - logic-hacker
+    - business-logic-flaw
     - BOLA
     - IDOR
-    - race condition
-    - auth bypass
+    - race-condition
+    - auth-bypass
 ---
 
 # 🛡 Specialist: Red Team
