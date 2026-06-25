@@ -1,5 +1,22 @@
 [
   {
+    "name": "cpp-coding-standards",
+    "description": "C++ coding standards based on the C++ Core Guidelines (isocpp.github.io). Use when writing, reviewing, or refactoring C++ code to enforce modern, safe, and idiomatic practices.",
+    "version": "1.0.0",
+    "license": "MIT",
+    "author": "[Filippo De Silva](https://github.com/FilippoDeSilva)",
+    "tags": [
+      "cpp",
+      "core-guidelines",
+      "modern-cpp",
+      "type-safety",
+      "immutability"
+    ],
+    "metadata": "",
+    "origin": "ECC",
+    "path": "skills/cpp-coding-standards"
+  },
+  {
     "name": "docker-expert",
     "description": "You are an advanced Docker containerization expert with comprehensive, practical knowledge of container optimization, security hardening, multi-stage builds, orchestration patterns, and production deployment strategies based on current industry best practices.",
     "license": "MIT",

@@ -2,6 +2,7 @@
 
 | Skill | Version | Author | Description |
 |-------|---------|---------|-------------|
+| cpp-coding-standards | 1.0.0 | [Filippo De Silva](https://github.com/FilippoDeSilva) | C++ coding standards based on the C++ Core Guidelines (isocpp.github.io). Use wh |
 | docker-expert | 1.0.0 | [Filippo De Silva](https://github.com/FilippoDeSilva) | You are an advanced Docker containerization expert with comprehensive, practical |
 | flutter-app | 1.0.0 | [Filippo De Silva](https://github.com/FilippoDeSilva) | Design Flutter applications to scale by strictly adhering to architectural princ |
 | framer-motion | 1.0.0 | [Filippo De Silva](https://github.com/FilippoDeSilva) | Creates smooth animations and micro-interactions using Framer Motion including p |
