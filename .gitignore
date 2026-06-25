@@ -5,3 +5,5 @@ node_modules/
 # agent skills
 skills/effoy-backend
 .agents
+# skills
+skills-lock.json
