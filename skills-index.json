@@ -1000,6 +1000,22 @@
     "path": "skills/rust-expert"
   },
   {
+    "name": "rust-async-patterns",
+    "description": "Master Rust async programming with Tokio, async traits, error handling, and concurrent patterns. Use when building async Rust applications, implementing concurrent systems, or debugging async code.",
+    "version": "1.0.0",
+    "author": "[Filippo De Silva](https://github.com/FilippoDeSilva)",
+    "tags": [
+      "rust",
+      "async",
+      "tokio",
+      "concurrency",
+      "best-practices"
+    ],
+    "license": "MIT",
+    "compatibility": "Rust 1.70+, Tokio",
+    "path": "skills/rust-expert/rust-async-patterns"
+  },
+  {
     "name": "websocket-engineer",
     "description": "Use when building real-time communication systems with WebSockets or Socket.IO. Invoke for bidirectional messaging, horizontal scaling with Redis, presence tracking, room management.",
     "license": "MIT",
