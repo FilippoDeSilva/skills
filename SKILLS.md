@@ -51,4 +51,5 @@
 | ponytail | 1.0.0 | [Filippo De Silva](https://github.com/FilippoDeSilva) | Forces the laziest solution that actually works, simplest, shortest, most minima |
 | react-native | 1.0.0 | [Filippo De Silva](https://github.com/FilippoDeSilva) | Provides React Native performance optimization guidelines for FPS, TTI, bundle s |
 | red-team | 1.0.0 | [Filippo De Silva](https://github.com/FilippoDeSilva) | Red Team persona for Business Logic and Auth manipulation. Generates and execute |
+| rust-expert | 1.0.0 | [Filippo De Silva](https://github.com/FilippoDeSilva) | Guide for writing idiomatic Rust code based on Apollo GraphQLs best practices ha |
 | websocket-engineer | 1.0.0 | [Filippo De Silva](https://github.com/FilippoDeSilva) | Use when building real-time communication systems with WebSockets or Socket.IO.  |
