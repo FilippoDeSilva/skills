@@ -1,5 +1,5 @@
 ---
-name: rust-expert
+name: rust
 description: Guide for writing idiomatic Rust code based on Apollo GraphQL's best practices handbook. Use when writing new Rust code, reviewing or refactoring existing code, deciding between borrowing vs cloning or ownership patterns, implementing error handling with Result types, optimizing Rust code for performance, or writing tests or documentation for Rust projects.
 version: 1.0.0
 author: "[Filippo De Silva](https://github.com/FilippoDeSilva)"
