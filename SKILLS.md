@@ -5,6 +5,7 @@
 | docker-expert | 1.0.0 | [Filippo De Silva](https://github.com/FilippoDeSilva) | You are an advanced Docker containerization expert with comprehensive, practical |
 | flutter-app | 1.0.0 | [Filippo De Silva](https://github.com/FilippoDeSilva) | Design Flutter applications to scale by strictly adhering to architectural princ |
 | framer-motion | 1.0.0 | [Filippo De Silva](https://github.com/FilippoDeSilva) | Creates smooth animations and micro-interactions using Framer Motion including p |
+| golang | 1.0.0 | [Filippo De Silva](https://github.com/FilippoDeSilva) | Idiomatic Golang design patterns — functional options, constructors, error flo |
 | nestjs-api-standards | 1.0.0 | [Filippo De Silva](https://github.com/FilippoDeSilva) | Create standardized API response envelopes, paginated endpoints, and error inter |
 | nestjs-architecture | 1.0.0 | [Filippo De Silva](https://github.com/FilippoDeSilva) | Design NestJS module boundaries, provider scope, and request pipeline choices. U |
 | nestjs-bullmq | 1.0.0 | [Filippo De Silva](https://github.com/FilippoDeSilva) | Implement BullMQ job workflows in NestJS. Use when building queue processors, re |
