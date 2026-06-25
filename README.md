@@ -11,8 +11,9 @@
 9. **Pentest**: Pentest skills for cybersecurity, penetration testing, and CVSS scoring.
 10. **Ponytail**: YAGNI (You Aren't Gonna Need It) principles for software development.
 11. **Docker**: Docker skills for containerization.
-12. **Rust**: Rust skills for systems programming.
-13. **Golang**: Golang skills for backend development.
+12. **C++**: C++ skills for systems programming.
+13. **Rust**: Rust skills for systems programming.
+14. **Golang**: Golang skills for backend development.
 
 
 ## Agent installation for agentic development
