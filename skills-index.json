@@ -74,6 +74,30 @@
     "path": "skills/golang"
   },
   {
+    "name": "golang-security",
+    "description": "Security best practices and vulnerability prevention for Golang. Covers injection (SQL, command, XSS), cryptography, filesystem safety, network security, cookies, secrets management, memory safety, and logging. Apply when writing, reviewing, or auditing Go code for security, or when working on any risky code involving crypto, I/O, secrets management, user input handling, or authentication. Includes configuration of security tools.",
+    "user-invocable": "true",
+    "version": "1.0.0",
+    "author": "[Filippo De Silva](https://github.com/FilippoDeSilva)",
+    "tags": [
+      "golang",
+      "security",
+      "best-practices"
+    ],
+    "license": "MIT",
+    "compatibility": "Designed for Claude Code or similar AI coding agents, and for projects using Golang.",
+    "metadata": "",
+    "requires": "",
+    "bins": [
+      "govulncheck"
+    ],
+    "install": "",
+    "- kind": "go",
+    "package": "golang.org/x/vuln/cmd/govulncheck@latest",
+    "allowed-tools": "Read Edit Write Glob Grep Bash(go:*) Bash(golangci-lint:*) Bash(git:*) Agent WebFetch Bash(govulncheck:*) WebSearch AskUserQuestion",
+    "path": "skills/golang-security"
+  },
+  {
     "name": "nestjs-api-standards",
     "description": "Create standardized API response envelopes, paginated endpoints, and error interceptors in NestJS. Use when implementing response wrappers, pagination DTOs, or global error formats.",
     "license": "MIT",
