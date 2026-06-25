@@ -31,10 +31,9 @@ function findSkillDirs(dir, base = "") {
       const skillFile = path.join(fullPath, "SKILL.md");
       if (fs.existsSync(skillFile)) {
         skillDirs.push({ path: fullPath, relativePath, folderName: entry.name });
-      } else {
-        // Recursively search subdirectories
-        skillDirs.push(...findSkillDirs(fullPath, relativePath));
       }
+      // Always recursively search subdirectories for nested skills
+      skillDirs.push(...findSkillDirs(fullPath, relativePath));
     }
   }
 
