@@ -71,7 +71,7 @@
     "bins": "",
     "install": [],
     "allowed-tools": "Read Edit Write Glob Grep Bash(go:*) Bash(golangci-lint:*) Bash(git:*) Agent AskUserQuestion",
-    "path": "skills/golang"
+    "path": "skills/golang-expert/golang"
   },
   {
     "name": "golang-security",
@@ -95,7 +95,7 @@
     "- kind": "go",
     "package": "golang.org/x/vuln/cmd/govulncheck@latest",
     "allowed-tools": "Read Edit Write Glob Grep Bash(go:*) Bash(golangci-lint:*) Bash(git:*) Agent WebFetch Bash(govulncheck:*) WebSearch AskUserQuestion",
-    "path": "skills/golang-security"
+    "path": "skills/golang-expert/golang-security"
   },
   {
     "name": "nestjs-api-standards",
