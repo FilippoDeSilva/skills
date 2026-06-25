@@ -983,6 +983,23 @@
     "path": "skills/red-team"
   },
   {
+    "name": "rust-expert",
+    "description": "Guide for writing idiomatic Rust code based on Apollo GraphQLs best practices handbook. Use when writing new Rust code, reviewing or refactoring existing code, deciding between borrowing vs cloning or ownership patterns, implementing error handling with Result types, optimizing Rust code for performance, or writing tests or documentation for Rust projects.",
+    "version": "1.0.0",
+    "author": "[Filippo De Silva](https://github.com/FilippoDeSilva)",
+    "tags": [
+      "rust",
+      "best-practices",
+      "idiomatic",
+      "security"
+    ],
+    "license": "MIT",
+    "compatibility": "Rust 1.70+, Cargo",
+    "metadata": "",
+    "allowed-tools": "Bash(cargo:*) Bash(rustc:*) Bash(rustfmt:*) Bash(clippy:*) Read Write Edit Glob Grep",
+    "path": "skills/rust-expert"
+  },
+  {
     "name": "websocket-engineer",
     "description": "Use when building real-time communication systems with WebSockets or Socket.IO. Invoke for bidirectional messaging, horizontal scaling with Redis, presence tracking, room management.",
     "license": "MIT",
