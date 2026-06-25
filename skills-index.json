@@ -38,6 +38,21 @@
     "path": "skills/flutter-app"
   },
   {
+    "name": "framer-motion",
+    "description": "Creates smooth animations and micro-interactions using Framer Motion including page transitions, gestures, scroll-based animations, and orchestrated sequences. Use when users request add animation, framer motion, page transition, animate component, or micro-interactions.",
+    "license": "MIT",
+    "version": "1.0.0",
+    "author": "[Filippo De Silva](https://github.com/FilippoDeSilva)",
+    "tags": [
+      "framer-motion",
+      "animation",
+      "ui",
+      "react",
+      "nextjs"
+    ],
+    "path": "skills/framer-motion"
+  },
+  {
     "name": "nestjs-api-standards",
     "description": "Create standardized API response envelopes, paginated endpoints, and error interceptors in NestJS. Use when implementing response wrappers, pagination DTOs, or global error formats.",
     "license": "MIT",
