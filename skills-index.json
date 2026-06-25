@@ -906,6 +906,21 @@
     "path": "skills/ponytail"
   },
   {
+    "name": "react-native",
+    "description": "Provides React Native performance optimization guidelines for FPS, TTI, bundle size, memory leaks, re-renders, and animations. Applies to tasks involving Hermes optimization, JS thread blocking, bridge overhead, FlashList, native modules, or debugging jank and frame drops.",
+    "license": "MIT",
+    "version": "1.0.0",
+    "author": "[Filippo De Silva](https://github.com/FilippoDeSilva)",
+    "tags": [
+      "react-native",
+      "expo",
+      "performance",
+      "optimization",
+      "profiling"
+    ],
+    "path": "skills/react-native"
+  },
+  {
     "name": "red-team",
     "description": "Red Team persona for Business Logic and Auth manipulation. Generates and executes stateful fuzzing scripts (Playwright/Python) to test RBAC bypasses, BOLA/IDOR, race conditions, and complex multi-step transaction flaws.",
     "license": "MIT",
