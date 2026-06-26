@@ -8,7 +8,7 @@ async function loadSkill() {
   }
 
   try {
-    const response = await fetch('data/skills.json');
+    const response = await fetch('https://raw.githubusercontent.com/FilippoDeSilva/skills/main/skills-index.json');
     const skills = await response.json();
     const skill = skills.find(s => s.name === skillId);
 
