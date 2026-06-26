@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Skill Detail</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <a href="index.html" class="back-link">← Back to Skills</a>
+      <h1 id="skill-name">Loading...</h1>
+      <div class="skill-meta">
+        <span id="skill-version"></span>
+        <span id="skill-author"></span>
+      </div>
+    </header>
+
+    <div class="skill-detail">
+      <div class="skill-sidebar">
+        <div class="meta-section">
+          <h3>Tags</h3>
+          <div class="tags" id="skill-tags"></div>
+        </div>
+        <div class="meta-section">
+          <h3>Metadata</h3>
+          <div id="skill-metadata"></div>
+        </div>
+      </div>
+
+      <div class="skill-content">
+        <div id="skill-markdown"></div>
+      </div>
+    </div>
+
+    <footer>
+      <p>Generated from <a href="https://github.com/FilippoDeSilva/skills">FilippoDeSilva/skills</a></p>
+    </footer>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/marked@12.0.0/marked.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="skill.js"></script>
+</body>
+</html>
