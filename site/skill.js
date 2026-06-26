@@ -84,8 +84,8 @@ async function loadMarkdown(skillPath, skillName) {
     // Trim YAML frontmatter for display
     let markdown = fullMarkdown.replace(/^---[\s\S]*?---\n/, '');
     
-    // Remove skill name heading if it matches
-    const nameHeadingRegex = new RegExp(`^#\s+${skillName.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')}\s*$`, 'im');
+    // Remove skill name heading and the description paragraph that follows it
+    const nameHeadingRegex = new RegExp(`^#\s+${skillName.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')}\\s*\\n[\\s\\S]*?(?=\\n#{1,3}\\s|$)`, 'im');
     markdown = markdown.replace(nameHeadingRegex, '');
     
     // Remove redundant sections that are already in sidebar (including their content)
