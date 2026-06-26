@@ -51,9 +51,9 @@ async function loadSkill() {
     }
     metadataContainer.innerHTML = metadataHtml;
 
-    // Render tags with # prefix
+    // Render tags (tags come from trusted JSON data)
     const tagsContainer = document.getElementById('skill-tags');
-    tagsContainer.innerHTML = skill.tags.map(tag => `<span class="tag">#${tag}</span>`).join('');
+    tagsContainer.innerHTML = skill.tags.map(tag => `<span class="tag">${tag}</span>`).join('');
 
     // Load and render markdown
     await loadMarkdown(skill.path, skill.name);
