@@ -35,20 +35,29 @@ document.addEventListener('keydown', (e) => {
 // Filter modal
 function openFilterModal() {
   const modal = document.getElementById('filter-modal');
-  modal.classList.add('active');
+  if (modal) modal.classList.add('active');
 }
 
 function closeFilterModal() {
   const modal = document.getElementById('filter-modal');
-  modal.classList.remove('active');
+  if (modal) modal.classList.remove('active');
 }
 
-document.getElementById('filter-toggle').addEventListener('click', openFilterModal);
-document.getElementById('modal-close').addEventListener('click', closeFilterModal);
-document.getElementById('filter-modal').addEventListener('click', (e) => {
-  if (e.target.id === 'filter-modal') closeFilterModal();
-});
-document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
+function setupEventListeners() {
+  const filterToggle = document.getElementById('filter-toggle');
+  const modalClose = document.getElementById('modal-close');
+  const filterModal = document.getElementById('filter-modal');
+  const themeToggle = document.getElementById('theme-toggle');
+  
+  if (filterToggle) filterToggle.addEventListener('click', openFilterModal);
+  if (modalClose) modalClose.addEventListener('click', closeFilterModal);
+  if (filterModal) {
+    filterModal.addEventListener('click', (e) => {
+      if (e.target.id === 'filter-modal') closeFilterModal();
+    });
+  }
+  if (themeToggle) themeToggle.addEventListener('click', toggleTheme);
+}
 
 async function loadSkills() {
   try {
@@ -91,6 +100,11 @@ function createFilters() {
   });
 
   const modalFilters = document.getElementById('modal-filters');
+  if (!modalFilters) {
+    console.error('Modal filters container not found');
+    return;
+  }
+  
   modalFilters.innerHTML = '<button class="filter-btn active" data-filter="all">All</button>';
 
   Array.from(categories).sort().forEach(category => {
@@ -161,5 +175,8 @@ searchInput.addEventListener('input', (e) => {
 });
 
 // Initialize
-initTheme();
-loadSkills();
+document.addEventListener('DOMContentLoaded', () => {
+  initTheme();
+  setupEventListeners();
+  loadSkills();
+});
