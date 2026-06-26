@@ -34,28 +34,25 @@ async function loadSkill() {
     // Render metadata in sidebar
     document.getElementById('skill-name').textContent = skill.name;
     document.getElementById('skill-description').textContent = skill.description;
+    
+    // Render header metadata
     document.getElementById('skill-version').textContent = `v${skill.version}`;
     document.getElementById('skill-author').textContent = skill.author;
-
-    // Render tags
-    const tagsContainer = document.getElementById('skill-tags');
-    tagsContainer.innerHTML = skill.tags.map(tag => `<span class="tag">${tag}</span>`).join('');
-
-    // Render additional metadata
+    
+    // Render header metadata
     const metadataContainer = document.getElementById('skill-metadata');
     let metadataHtml = '';
-    
     if (skill.license) {
-      metadataHtml += `<p><strong>License:</strong> ${skill.license}</p>`;
+      metadataHtml += `<span>License: ${skill.license}</span>`;
     }
     if (skill.compatibility) {
-      metadataHtml += `<p><strong>Compatibility:</strong> ${skill.compatibility}</p>`;
+      metadataHtml += `<span>Compatibility: ${skill.compatibility}</span>`;
     }
-    if (skill.path) {
-      metadataHtml += `<p><strong>Path:</strong> <code>${skill.path}</code></p>`;
-    }
-    
-    metadataContainer.innerHTML = metadataHtml || '<p>No additional metadata</p>';
+    metadataContainer.innerHTML = metadataHtml;
+
+    // Render tags with # prefix
+    const tagsContainer = document.getElementById('skill-tags');
+    tagsContainer.innerHTML = skill.tags.map(tag => `<span class="tag">#${tag}</span>`).join('');
 
     // Load and render markdown
     await loadMarkdown(skill.path, skill.name);
