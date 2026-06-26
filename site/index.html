@@ -9,7 +9,18 @@
 <body>
   <div class="container">
     <header>
-      <h1>Filippo's Agentic Skills</h1>
+      <div class="header-top">
+        <h1>Filippo's Agentic Skills</h1>
+        <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
+          <svg class="sun-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="10" cy="10" r="4"/>
+            <path d="M10 2v2M10 16v2M2 10h2M16 10h2M4.93 4.93l1.41 1.41M13.66 13.66l1.41 1.41M4.93 15.07l1.41-1.41M13.66 6.34l1.41-1.41"/>
+          </svg>
+          <svg class="moon-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"/>
+          </svg>
+        </button>
+      </div>
       <p class="subtitle">Production-ready AI skills for modern software engineering</p>
       <div class="stats">
         <span id="skill-count">0 Skills</span>
@@ -19,10 +30,16 @@
     </header>
 
     <div class="search-container">
-      <input type="text" id="search" placeholder="Search skills..." autocomplete="off">
-      <div class="filters">
-        <button class="filter-btn active" data-filter="all">All</button>
+      <div class="search-wrapper">
+        <input type="text" id="search" placeholder="Search skills... (Ctrl+K)" autocomplete="off">
+        <kbd class="kbd-shortcut">⌘K</kbd>
       </div>
+      <button class="filter-toggle" id="filter-toggle">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-.293.707l-4 4a1 1 0 00-.293.707V15l-3 1v-3.586a1 1 0 00-.293-.707l-4-4A1 1 0 013 6V4z"/>
+        </svg>
+        Filter
+      </button>
     </div>
 
     <div class="skills-grid" id="skills-grid"></div>
@@ -30,6 +47,17 @@
     <footer>
       <p>Generated from <a href="https://github.com/FilippoDeSilva/skills">FilippoDeSilva/skills</a></p>
     </footer>
+
+    <!-- Filter Modal -->
+    <div class="modal" id="filter-modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Filter by Category</h2>
+          <button class="modal-close" id="modal-close">✕</button>
+        </div>
+        <div class="modal-body" id="modal-filters"></div>
+      </div>
+    </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>

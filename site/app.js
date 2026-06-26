@@ -1,5 +1,54 @@
 let skills = [];
 let fuse = null;
+let currentFilter = 'all';
+
+// Theme management
+function initTheme() {
+  const savedTheme = localStorage.getItem('theme');
+  const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  
+  if (savedTheme === 'light' || (!savedTheme && !systemPrefersDark)) {
+    document.documentElement.setAttribute('data-theme', 'light');
+  } else {
+    document.documentElement.setAttribute('data-theme', 'dark');
+  }
+}
+
+function toggleTheme() {
+  const currentTheme = document.documentElement.getAttribute('data-theme');
+  const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', newTheme);
+  localStorage.setItem('theme', newTheme);
+}
+
+// Keyboard shortcuts
+document.addEventListener('keydown', (e) => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+    e.preventDefault();
+    document.getElementById('search').focus();
+  }
+  if (e.key === 'Escape') {
+    document.getElementById('filter-modal').classList.remove('active');
+  }
+});
+
+// Filter modal
+function openFilterModal() {
+  const modal = document.getElementById('filter-modal');
+  modal.classList.add('active');
+}
+
+function closeFilterModal() {
+  const modal = document.getElementById('filter-modal');
+  modal.classList.remove('active');
+}
+
+document.getElementById('filter-toggle').addEventListener('click', openFilterModal);
+document.getElementById('modal-close').addEventListener('click', closeFilterModal);
+document.getElementById('filter-modal').addEventListener('click', (e) => {
+  if (e.target.id === 'filter-modal') closeFilterModal();
+});
+document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
 
 async function loadSkills() {
   try {
@@ -41,31 +90,36 @@ function createFilters() {
     skill.tags.forEach(tag => categories.add(tag));
   });
 
-  const filtersContainer = document.querySelector('.filters');
-  filtersContainer.innerHTML = '<button class="filter-btn active" data-filter="all">All</button>';
+  const modalFilters = document.getElementById('modal-filters');
+  modalFilters.innerHTML = '<button class="filter-btn active" data-filter="all">All</button>';
 
   Array.from(categories).sort().forEach(category => {
     const btn = document.createElement('button');
     btn.className = 'filter-btn';
     btn.textContent = category;
     btn.dataset.filter = category;
-    filtersContainer.appendChild(btn);
+    modalFilters.appendChild(btn);
   });
 
-  filtersContainer.addEventListener('click', (e) => {
+  modalFilters.addEventListener('click', (e) => {
     if (e.target.classList.contains('filter-btn')) {
       document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
       e.target.classList.add('active');
       
-      const filter = e.target.dataset.filter;
-      if (filter === 'all') {
-        renderSkills(skills);
-      } else {
-        const filtered = skills.filter(skill => skill.tags.includes(filter));
-        renderSkills(filtered);
-      }
+      currentFilter = e.target.dataset.filter;
+      applyFilter();
+      closeFilterModal();
     }
   });
+}
+
+function applyFilter() {
+  if (currentFilter === 'all') {
+    renderSkills(skills);
+  } else {
+    const filtered = skills.filter(skill => skill.tags.includes(currentFilter));
+    renderSkills(filtered);
+  }
 }
 
 function renderSkills(skillsToRender) {
@@ -98,7 +152,7 @@ searchInput.addEventListener('input', (e) => {
   const query = e.target.value.trim();
   
   if (!query) {
-    renderSkills(skills);
+    applyFilter();
     return;
   }
 
@@ -107,4 +161,5 @@ searchInput.addEventListener('input', (e) => {
 });
 
 // Initialize
+initTheme();
 loadSkills();
