@@ -76,10 +76,13 @@ async function loadMarkdown(skillPath, skillName) {
       throw new Error('Markdown file not found');
     }
 
-    let markdown = await response.text();
+    let fullMarkdown = await response.text();
     
-    // Remove YAML frontmatter
-    markdown = markdown.replace(/^---[\s\S]*?---\n/, '');
+    // Store full markdown for copy button
+    window.fullMarkdown = fullMarkdown;
+    
+    // Trim YAML frontmatter for display
+    let markdown = fullMarkdown.replace(/^---[\s\S]*?---\n/, '');
     
     // Remove skill name heading if it matches
     const nameHeadingRegex = new RegExp(`^#\s+${skillName.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')}\s*$`, 'im');
@@ -103,6 +106,30 @@ async function loadMarkdown(skillPath, skillName) {
     // Apply syntax highlighting to code blocks
     document.querySelectorAll('#skill-markdown pre code').forEach((block) => {
       hljs.highlightElement(block);
+    });
+
+    // Setup copy button
+    const copyButton = document.getElementById('copy-button');
+    copyButton.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(window.fullMarkdown);
+        copyButton.innerHTML = `
+          <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M5 13l4 4L19 7"/>
+          </svg>
+          Copied!
+        `;
+        setTimeout(() => {
+          copyButton.innerHTML = `
+            <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+            </svg>
+            Copy
+          `;
+        }, 2000);
+      } catch (err) {
+        console.error('Failed to copy:', err);
+      }
     });
 
   } catch (error) {
