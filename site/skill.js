@@ -1,3 +1,17 @@
+// Theme management
+function initTheme() {
+  const savedTheme = localStorage.getItem('theme');
+  const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  
+  if (savedTheme === 'light' || (!savedTheme && !systemPrefersDark)) {
+    document.documentElement.setAttribute('data-theme', 'light');
+    document.getElementById('hljs-theme').href = 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css';
+  } else {
+    document.documentElement.setAttribute('data-theme', 'dark');
+    document.getElementById('hljs-theme').href = 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css';
+  }
+}
+
 async function loadSkill() {
   const params = new URLSearchParams(window.location.search);
   const skillId = params.get('id');
@@ -17,8 +31,9 @@ async function loadSkill() {
       return;
     }
 
-    // Render metadata
+    // Render metadata in sidebar
     document.getElementById('skill-name').textContent = skill.name;
+    document.getElementById('skill-description').textContent = skill.description;
     document.getElementById('skill-version').textContent = `v${skill.version}`;
     document.getElementById('skill-author').textContent = skill.author;
 
@@ -43,7 +58,7 @@ async function loadSkill() {
     metadataContainer.innerHTML = metadataHtml || '<p>No additional metadata</p>';
 
     // Load and render markdown
-    await loadMarkdown(skill.path);
+    await loadMarkdown(skill.path, skill.name);
 
   } catch (error) {
     console.error('Failed to load skill:', error);
@@ -51,7 +66,7 @@ async function loadSkill() {
   }
 }
 
-async function loadMarkdown(skillPath) {
+async function loadMarkdown(skillPath, skillName) {
   try {
     // Fetch from GitHub raw content
     const githubRawUrl = `https://raw.githubusercontent.com/FilippoDeSilva/skills/main/${skillPath}/SKILL.md`;
@@ -61,7 +76,14 @@ async function loadMarkdown(skillPath) {
       throw new Error('Markdown file not found');
     }
 
-    const markdown = await response.text();
+    let markdown = await response.text();
+    
+    // Remove YAML frontmatter
+    markdown = markdown.replace(/^---[\s\S]*?---\n/, '');
+    
+    // Remove skill name heading if it matches
+    const nameHeadingRegex = new RegExp(`^#\s+${skillName.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')}\s*$`, 'im');
+    markdown = markdown.replace(nameHeadingRegex, '');
     
     // Configure marked
     marked.setOptions({
@@ -93,4 +115,7 @@ async function loadMarkdown(skillPath) {
 }
 
 // Initialize
-loadSkill();
+document.addEventListener('DOMContentLoaded', () => {
+  initTheme();
+  loadSkill();
+});
