@@ -88,6 +88,14 @@ async function loadMarkdown(skillPath, skillName) {
     const nameHeadingRegex = new RegExp(`^#\s+${skillName.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')}\s*$`, 'im');
     markdown = markdown.replace(nameHeadingRegex, '');
     
+    // Remove redundant sections that are already in sidebar
+    markdown = markdown.replace(/^##\s+(Description|Author|Version|Tags|License|Metadata|Compatibility)\s*$/gim, '');
+    markdown = markdown.replace(/^##\s+Author\s*\n.*$/gim, '');
+    markdown = markdown.replace(/^##\s+Version\s*\n.*$/gim, '');
+    
+    // Clean up empty lines after removing sections
+    markdown = markdown.replace(/\n{3,}/g, '\n\n');
+    
     // Configure marked
     marked.setOptions({
       highlight: function(code, lang) {
@@ -113,6 +121,7 @@ async function loadMarkdown(skillPath, skillName) {
     copyButton.addEventListener('click', async () => {
       try {
         await navigator.clipboard.writeText(window.fullMarkdown);
+        const originalHTML = copyButton.innerHTML;
         copyButton.innerHTML = `
           <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M5 13l4 4L19 7"/>
@@ -120,15 +129,11 @@ async function loadMarkdown(skillPath, skillName) {
           Copied!
         `;
         setTimeout(() => {
-          copyButton.innerHTML = `
-            <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
-            </svg>
-            Copy
-          `;
+          copyButton.innerHTML = originalHTML;
         }, 2000);
       } catch (err) {
         console.error('Failed to copy:', err);
+        alert('Failed to copy to clipboard');
       }
     });
 
