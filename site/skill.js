@@ -37,7 +37,8 @@ async function loadSkill() {
     
     // Render header metadata
     document.getElementById('skill-version').textContent = `v${skill.version}`;
-    document.getElementById('skill-author').textContent = skill.author;
+    // Parse author markdown to handle links
+    document.getElementById('skill-author').innerHTML = marked.parse(skill.author);
     
     // Render header metadata
     const metadataContainer = document.getElementById('skill-metadata');
