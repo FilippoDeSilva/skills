@@ -39,7 +39,8 @@ jobs:
 
       - name: Generate HTML page
         run: |
-          cat > index.html << 'EOF'
+          mkdir -p site
+          cat > site/index.html << 'EOF'
           <!DOCTYPE html>
           <html lang="en">
           <head>
@@ -81,7 +82,7 @@ jobs:
             DESC=$(jq -r --arg s "$skill" '.[] | select(.name == $s) | .description' dist/skills.index.json)
             TAGS=$(jq -r --arg s "$skill" '.[] | select(.name == $s) | .tags[]' dist/skills.index.json)
 
-            cat >> index.html << EOF
+            cat >> site/index.html << EOF
                 <div class="skill-card">
                   <div class="skill-name">$NAME</div>
                   <div class="skill-version">v$VERSION</div>
@@ -91,16 +92,16 @@ jobs:
           EOF
 
             for tag in $TAGS; do
-              echo "                    <span class=\"tag\">$tag</span>" >> index.html
+              echo "                    <span class=\"tag\">$tag</span>" >> site/index.html
             done
 
-            cat >> index.html << EOF
+            cat >> site/index.html << EOF
                   </div>
                 </div>
           EOF
           done
 
-          cat >> index.html << 'EOF'
+          cat >> site/index.html << 'EOF'
               </div>
               <div class="footer">
                 <p>Generated from <a href="https://github.com/FilippoDeSilva/skills">FilippoDeSilva/skills</a></p>
@@ -116,7 +117,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: 'index.html'
+          path: 'site'
 
   deploy:
     environment:
