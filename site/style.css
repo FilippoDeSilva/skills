@@ -331,14 +331,29 @@ footer a:hover {
 .skill-sidebar {
   position: sticky;
   top: 40px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-auto-rows: min-content;
+  gap: 12px;
 }
 
 .meta-section {
   background: var(--bg-secondary);
   border: 1px solid var(--border-color);
   border-radius: 8px;
-  padding: 20px;
-  margin-bottom: 16px;
+  padding: 16px;
+}
+
+.meta-large {
+  grid-column: span 2;
+}
+
+.meta-small {
+  grid-column: span 1;
+}
+
+.meta-medium {
+  grid-column: span 1;
 }
 
 .meta-section h3 {
@@ -575,6 +590,13 @@ footer a:hover {
 
   .skill-sidebar {
     position: static;
+    grid-template-columns: 1fr;
+  }
+
+  .meta-large,
+  .meta-small,
+  .meta-medium {
+    grid-column: span 1;
   }
 
   h1 {
