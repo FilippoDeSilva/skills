@@ -82,11 +82,15 @@ async function loadMarkdown(skillPath, skillName) {
     window.fullMarkdown = fullMarkdown;
     
     // Trim YAML frontmatter for display
-    let markdown = fullMarkdown.replace(/^---[\s\S]*?---\n/, '');
+    let markdown = fullMarkdown;
+    const yamlMatch = markdown.match(/^---\n([\s\S]*?)\n---\n/);
+    if (yamlMatch) {
+      markdown = markdown.substring(yamlMatch[0].length);
+    }
     
-    // Remove skill name heading and the description paragraph that follows it
-    const nameHeadingRegex = new RegExp(`^#\s+${skillName.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')}\\s*\\n[\\s\\S]*?(?=\\n#{1,3}\\s|$)`, 'im');
-    markdown = markdown.replace(nameHeadingRegex, '');
+    // Remove the first heading (title) and the paragraph that follows it (description)
+    // This handles cases where the heading differs from the skill name (e.g., "Framer Motion Animator" vs "framer-motion")
+    markdown = markdown.replace(/^#\s+.+\n[^\n#]+(?:\n[^\n#]+)*/m, '');
     
     // Remove redundant sections that are already in sidebar (including their content)
     // This removes the heading and all content until the next heading at same or higher level
