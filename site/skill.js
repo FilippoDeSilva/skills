@@ -83,9 +83,14 @@ async function loadMarkdown(skillPath, skillName) {
     
     // Trim YAML frontmatter for display
     let markdown = fullMarkdown;
-    const yamlMatch = markdown.match(/^---\n([\s\S]*?)\n---\n/);
-    if (yamlMatch) {
-      markdown = markdown.substring(yamlMatch[0].length);
+    const startIndex = markdown.indexOf('---');
+    if (startIndex === 0) {
+      const endIndex = markdown.indexOf('---', startIndex + 3);
+      if (endIndex !== -1) {
+        markdown = markdown.substring(endIndex + 3);
+        // Remove any remaining whitespace/newlines after the closing ---
+        markdown = markdown.replace(/^[\r\n]+/, '');
+      }
     }
     
     // Remove the first heading (title) and the paragraph that follows it (description)
