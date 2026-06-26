@@ -88,13 +88,18 @@ async function loadMarkdown(skillPath, skillName) {
     const nameHeadingRegex = new RegExp(`^#\s+${skillName.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')}\s*$`, 'im');
     markdown = markdown.replace(nameHeadingRegex, '');
     
-    // Remove redundant sections that are already in sidebar
-    markdown = markdown.replace(/^##\s+(Description|Author|Version|Tags|License|Metadata|Compatibility)\s*$/gim, '');
-    markdown = markdown.replace(/^##\s+Author\s*\n.*$/gim, '');
-    markdown = markdown.replace(/^##\s+Version\s*\n.*$/gim, '');
+    // Remove redundant sections that are already in sidebar (including their content)
+    // This removes the heading and all content until the next heading at same or higher level
+    const sectionsToRemove = ['Description', 'Author', 'Version', 'Tags', 'License', 'Metadata', 'Compatibility'];
+    sectionsToRemove.forEach(section => {
+      // Match ## SectionName and all content until next ## or ###
+      const sectionRegex = new RegExp(`^#{1,3}\\s+${section}\\s*\\n[\\s\\S]*?(?=\\n#{1,3}\\s|$)`, 'gim');
+      markdown = markdown.replace(sectionRegex, '');
+    });
     
     // Clean up empty lines after removing sections
     markdown = markdown.replace(/\n{3,}/g, '\n\n');
+    markdown = markdown.trim();
     
     // Configure marked
     marked.setOptions({
