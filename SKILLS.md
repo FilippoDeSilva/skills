@@ -5,6 +5,7 @@
 | cpp-coding-standards | 1.0.0 | [Filippo De Silva](https://github.com/FilippoDeSilva) | C++ coding standards based on the C++ Core Guidelines (isocpp.github.io). Use wh |
 | docker-expert | 1.0.0 | [Filippo De Silva](https://github.com/FilippoDeSilva) | You are an advanced Docker containerization expert with comprehensive, practical |
 | flutter-app | 1.0.0 | [Filippo De Silva](https://github.com/FilippoDeSilva) | Design Flutter applications to scale by strictly adhering to architectural princ |
+| shadcn-ui-flutter | 1.0.0 | [Filippo De Silva](https://github.com/FilippoDeSilva) | A comprehensive Flutter UI library inspired by shadcn/ui. Provides high-quality, |
 | golang | 1.0.0 | [Filippo De Silva](https://github.com/FilippoDeSilva) | Idiomatic Golang design patterns — functional options, constructors, error flo |
 | golang-security | 1.0.0 | [Filippo De Silva](https://github.com/FilippoDeSilva) | Security best practices and vulnerability prevention for Golang. Covers injectio |
 | nestjs-api-standards | 1.0.0 | [Filippo De Silva](https://github.com/FilippoDeSilva) | Create standardized API response envelopes, paginated endpoints, and error inter |
