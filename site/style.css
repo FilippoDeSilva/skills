@@ -97,25 +97,26 @@ h1 {
   margin-bottom: 20px;
 }
 
-.stats {
+.stats-container {
   display: flex;
   gap: 24px;
-  color: var(--text-secondary);
-  font-size: 0.9rem;
+  margin-top: 16px;
 }
 
-.stats span {
+.stat-item {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  padding: 6px 12px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
 }
 
-.stats span::before {
-  content: '';
-  width: 8px;
-  height: 8px;
-  background: var(--accent-color);
-  border-radius: 50%;
+.stat-item svg {
+  color: var(--accent-color);
 }
 
 .search-container {
@@ -219,6 +220,15 @@ h1 {
 }
 
 .skill-author a:hover {
+  text-decoration: underline;
+}
+
+.skill-author-link {
+  color: var(--accent-color);
+  text-decoration: none;
+}
+
+.skill-author-link:hover {
   text-decoration: underline;
 }
 
@@ -601,9 +611,14 @@ footer a:hover {
     right: 20px;
   }
 
-  .stats {
+  .stats-container {
     flex-wrap: wrap;
     gap: 12px;
+  }
+
+  .stat-item {
+    font-size: 0.8rem;
+    padding: 5px 10px;
   }
 
   .search-container {

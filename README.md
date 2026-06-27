@@ -2,18 +2,20 @@
 
 1. **OWASP**: OWASP Top 10 Skills for API development and APISec.
 2. **Next.js**: Next.js skills for frontend development.
-3. **NestJS**: NestJS skills for backend development.
-4. **Framer Motion**: Framer motion skills for smooth animations and micro-interactions.
-5. **React Native**: React native skills for mobile development.
-6. **Flutter**: Flutter skills for mobile development.
-7. **Websocket**: Websocket skills for real-time communication.
-8. **Read-Team**: Read-Team skills for cybersecurity and threat analysis.
-9. **Pentest**: Pentest skills for cybersecurity, penetration testing, and CVSS scoring.
-10. **Ponytail**: YAGNI (You Aren't Gonna Need It) principles for software development.
-11. **Docker**: Docker skills for containerization.
-12. **C++**: C++ skills for systems programming.
-13. **Rust**: Rust skills for systems programming.
-14. **Golang**: Golang skills for backend development.
+3. **UI/UX Design**: UI/UX design skills for creating user-friendly interfaces.
+4. **NestJS**: NestJS skills for backend development.
+5. **Framer Motion**: Framer motion skills for smooth animations and micro-interactions.
+6. **React Native**: React native skills for mobile development.
+7. **Flutter**: Flutter skills for mobile development.
+8. **Websocket**: Websocket skills for real-time communication.
+9. **NestJS Queue Architect**: NestJS Queue Architect skills for queue-based architecture.
+10. **Read-Team**: Read-Team skills for cybersecurity and threat analysis.
+11. **Pentest**: Pentest skills for cybersecurity, penetration testing, and CVSS scoring.
+12. **Ponytail**: YAGNI (You Aren't Gonna Need It) principles for software development.
+13. **Docker**: Docker skills for containerization.
+14. **C++**: C++ skills for systems programming.
+15. **Rust**: Rust skills for systems programming.
+16. **Golang**: Golang skills for backend development.
 
 
 ## Agent installation for agentic development

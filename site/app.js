@@ -74,7 +74,6 @@ function renderSkills(skillsToRender) {
         <div class="skill-name">${skill.name}</div>
         <div class="skill-version">v${skill.version}</div>
       </div>
-      <div class="skill-author">${skill.author}</div>
       <div class="skill-description">${skill.description}</div>
       <div class="tags">
         ${skill.tags.slice(0, 4).map(tag => `<span class="tag">${tag}</span>`).join('')}
