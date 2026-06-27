@@ -52,7 +52,20 @@
       "repository-pattern",
       "service-layer"
     ],
-    "path": "skills/flutter-app"
+    "path": "skills/flutter/flutter-app"
+  },
+  {
+    "name": "shadcn-ui-flutter",
+    "description": "A comprehensive Flutter UI library inspired by shadcn/ui. Provides high-quality, customizable, and accessible components including Buttons, Cards, Forms, and more. Use this skill when building Flutter UIs, implementing design systems, or needing specific component usage examples.",
+    "license": "MIT",
+    "version": "1.0.0",
+    "author": "[Filippo De Silva](https://github.com/FilippoDeSilva)",
+    "tags": [
+      "flutter",
+      "shadcnui",
+      "components"
+    ],
+    "path": "skills/flutter/shadcn-ui-flutter"
   },
   {
     "name": "golang",
