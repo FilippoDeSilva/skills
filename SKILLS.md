@@ -5,7 +5,6 @@
 | cpp-coding-standards | 1.0.0 | [Filippo De Silva](https://github.com/FilippoDeSilva) | C++ coding standards based on the C++ Core Guidelines (isocpp.github.io). Use wh |
 | docker-expert | 1.0.0 | [Filippo De Silva](https://github.com/FilippoDeSilva) | You are an advanced Docker containerization expert with comprehensive, practical |
 | flutter-app | 1.0.0 | [Filippo De Silva](https://github.com/FilippoDeSilva) | Design Flutter applications to scale by strictly adhering to architectural princ |
-| framer-motion | 1.0.0 | [Filippo De Silva](https://github.com/FilippoDeSilva) | Creates smooth animations and micro-interactions using Framer Motion including p |
 | golang | 1.0.0 | [Filippo De Silva](https://github.com/FilippoDeSilva) | Idiomatic Golang design patterns — functional options, constructors, error flo |
 | golang-security | 1.0.0 | [Filippo De Silva](https://github.com/FilippoDeSilva) | Security best practices and vulnerability prevention for Golang. Covers injectio |
 | nestjs-api-standards | 1.0.0 | [Filippo De Silva](https://github.com/FilippoDeSilva) | Create standardized API response envelopes, paginated endpoints, and error inter |
@@ -22,6 +21,7 @@
 | nestjs-notification | 1.0.0 | [Filippo De Silva](https://github.com/FilippoDeSilva) | Build dual-write notification services with database persistence and FCM push de |
 | nestjs-observability | 1.0.0 | [Filippo De Silva](https://github.com/FilippoDeSilva) | Configure structured logging with Pino, Prometheus metrics, and health checks fo |
 | nestjs-performance | 1.0.0 | [Filippo De Silva](https://github.com/FilippoDeSilva) | Optimize NestJS throughput with Fastify adapter, singleton scope enforcement, co |
+| nestjs-queue-architect | 1.0.0 | [Filippo De Silva](https://github.com/FilippoDeSilva) | Queue job management patterns, processors, and async workflows for video/image p |
 | nestjs-real-time | 1.0.0 | [Filippo De Silva](https://github.com/FilippoDeSilva) | Implement WebSocket gateways with Socketio and Server-Sent Events endpoints in N |
 | nestjs-scheduling | 1.0.0 | [Filippo De Silva](https://github.com/FilippoDeSilva) | Implement distributed cron jobs with Redis-based locking and BullMQ offloading i |
 | nestjs-search | 1.0.0 | [Filippo De Silva](https://github.com/FilippoDeSilva) | Integrate Elasticsearch and implement search index Sync patterns in NestJS. Use  |
@@ -54,4 +54,10 @@
 | red-team | 1.0.0 | [Filippo De Silva](https://github.com/FilippoDeSilva) | Red Team persona for Business Logic and Auth manipulation. Generates and execute |
 | rust | 1.0.0 | [Filippo De Silva](https://github.com/FilippoDeSilva) | Guide for writing idiomatic Rust code based on Apollo GraphQLs best practices ha |
 | rust-async-patterns | 1.0.0 | [Filippo De Silva](https://github.com/FilippoDeSilva) | Master Rust async programming with Tokio, async traits, error handling, and conc |
+| design-taste-frontend | 1.0.0 | [Filippo De Silva](https://github.com/FilippoDeSilva) | Anti-slop frontend skill for landing pages, portfolios, and redesigns. The agent |
+| framer-motion | 1.0.0 | [Filippo De Silva](https://github.com/FilippoDeSilva) | Creates smooth animations and micro-interactions using Framer Motion including p |
+| high-end-visual-design | 1.0.0 | [Filippo De Silva](https://github.com/FilippoDeSilva) | Teaches the AI to design like a high-end agency. Defines the exact fonts, spacin |
+| responsive-design | 1.0.0 | [Filippo De Silva](https://github.com/FilippoDeSilva) | Implement modern responsive layouts using container queries, fluid typography, C |
+| tailwind-design-system | 1.0.0 | [Filippo De Silva](https://github.com/FilippoDeSilva) | Build scalable design systems with Tailwind CSS v4, design tokens, component lib |
+| ui-ux-pro-max | 1.0.0 | [Filippo De Silva](https://github.com/FilippoDeSilva) | UI/UX design intelligence for web and mobile. Includes 50+ styles, 161 color pal |
 | websocket-engineer | 1.0.0 | [Filippo De Silva](https://github.com/FilippoDeSilva) | Use when building real-time communication systems with WebSockets or Socket.IO.  |

@@ -55,21 +55,6 @@
     "path": "skills/flutter-app"
   },
   {
-    "name": "framer-motion",
-    "description": "Creates smooth animations and micro-interactions using Framer Motion including page transitions, gestures, scroll-based animations, and orchestrated sequences. Use when users request add animation, framer motion, page transition, animate component, or micro-interactions.",
-    "license": "MIT",
-    "version": "1.0.0",
-    "author": "[Filippo De Silva](https://github.com/FilippoDeSilva)",
-    "tags": [
-      "framer-motion",
-      "animation",
-      "ui",
-      "react",
-      "nextjs"
-    ],
-    "path": "skills/framer-motion"
-  },
-  {
     "name": "golang",
     "description": "Idiomatic Golang design patterns — functional options, constructors, error flow and cascading, resource management and lifecycle, graceful shutdown, resilience, architecture, dependency injection, data handling, streaming, and more. Apply when explicitly choosing between architectural patterns, implementing functional options, designing constructor APIs, setting up graceful shutdown, applying resilience patterns, or asking which idiomatic Go pattern fits a specific problem.",
     "user-invocable": "true",
@@ -386,6 +371,24 @@
     "files": "",
     "keywords": "",
     "path": "skills/nestjs/nestjs-performance"
+  },
+  {
+    "name": "nestjs-queue-architect",
+    "description": "Queue job management patterns, processors, and async workflows for video/image processing",
+    "metadata": "",
+    "version": "1.0.0",
+    "author": "[Filippo De Silva](https://github.com/FilippoDeSilva)",
+    "technology": "BullMQ 5.61.0 with NestJS 11.1.7",
+    "expertise_level": "senior",
+    "last_updated": "2025-10-22",
+    "tags": [
+      "nestjs",
+      "queues",
+      "async",
+      "bullmq",
+      "redis"
+    ],
+    "path": "skills/nestjs/nestjs-queue-architect"
   },
   {
     "name": "nestjs-real-time",
@@ -1031,6 +1034,89 @@
     "license": "MIT",
     "compatibility": "Rust 1.70+, Tokio",
     "path": "skills/rust-expert/rust-async-patterns"
+  },
+  {
+    "name": "design-taste-frontend",
+    "description": "Anti-slop frontend skill for landing pages, portfolios, and redesigns. The agent reads the brief, infers the right design direction, and ships interfaces that do not look templated. Real design systems when applicable, audit-first on redesigns, strict pre-flight check.",
+    "license": "MIT",
+    "version": "1.0.0",
+    "author": "[Filippo De Silva](https://github.com/FilippoDeSilva)",
+    "tags": [
+      "ui-ux-design",
+      "frontend",
+      "design"
+    ],
+    "path": "skills/ui-ux-design/design-taste-frontend"
+  },
+  {
+    "name": "framer-motion",
+    "description": "Creates smooth animations and micro-interactions using Framer Motion including page transitions, gestures, scroll-based animations, and orchestrated sequences. Use when users request add animation, framer motion, page transition, animate component, or micro-interactions.",
+    "license": "MIT",
+    "version": "1.0.0",
+    "author": "[Filippo De Silva](https://github.com/FilippoDeSilva)",
+    "tags": [
+      "framer-motion",
+      "animation",
+      "ui",
+      "react",
+      "nextjs"
+    ],
+    "path": "skills/ui-ux-design/framer-motion"
+  },
+  {
+    "name": "high-end-visual-design",
+    "description": "Teaches the AI to design like a high-end agency. Defines the exact fonts, spacing, shadows, card structures, and animations that make a website feel expensive. Blocks all the common defaults that make AI designs look cheap or generic.",
+    "license": "MIT",
+    "version": "1.0.0",
+    "author": "[Filippo De Silva](https://github.com/FilippoDeSilva)",
+    "tags": [
+      "ui-ux-design",
+      "visual-design",
+      "high-end",
+      "premium"
+    ],
+    "path": "skills/ui-ux-design/high-end-visual-design"
+  },
+  {
+    "name": "responsive-design",
+    "description": "Implement modern responsive layouts using container queries, fluid typography, CSS Grid, and mobile-first breakpoint strategies. Use when building adaptive interfaces, implementing fluid layouts, or creating component-level responsive behavior.",
+    "license": "MIT",
+    "version": "1.0.0",
+    "author": "[Filippo De Silva](https://github.com/FilippoDeSilva)",
+    "tags": [
+      "ui-ux-design",
+      "responsive-design",
+      "css",
+      "grid",
+      "flexbox"
+    ],
+    "path": "skills/ui-ux-design/responsive-design"
+  },
+  {
+    "name": "tailwind-design-system",
+    "description": "Build scalable design systems with Tailwind CSS v4, design tokens, component libraries, and responsive patterns. Use when creating component libraries, implementing design systems, or standardizing UI patterns.",
+    "license": "MIT",
+    "version": "1.0.0",
+    "author": "[Filippo De Silva](https://github.com/FilippoDeSilva)",
+    "tags": [
+      "ui-ux-design",
+      "tailwind",
+      "design-system",
+      "css"
+    ],
+    "path": "skills/ui-ux-design/tailwind-design-system"
+  },
+  {
+    "name": "ui-ux-pro-max",
+    "description": "UI/UX design intelligence for web and mobile. Includes 50+ styles, 161 color palettes, 57 font pairings, 161 product types, 99 UX guidelines, and 25 chart types across 10 stacks (React, Next.js, Vue, Svelte, SwiftUI, React Native, Flutter, Tailwind, shadcn/ui, and HTML/CSS). Actions: plan, build, create, design, implement, review, fix, improve, optimize, enhance, refactor, and check UI/UX code. Projects: website, landing page, dashboard, admin panel, e-commerce, SaaS, portfolio, blog, and mobile app. Elements: button, modal, navbar, sidebar, card, table, form, and chart. Styles: glassmorphism, claymorphism, minimalism, brutalism, neumorphism, bento grid, dark mode, responsive, skeuomorphism, and flat design. Topics: color systems, accessibility, animation, layout, typography, font pairing, spacing, interaction states, shadow, and gradient. Integrations: shadcn/ui MCP for component search and examples.",
+    "license": "MIT",
+    "version": "1.0.0",
+    "author": "[Filippo De Silva](https://github.com/FilippoDeSilva)",
+    "tags": [
+      "ui-ux-design",
+      "responsive-design"
+    ],
+    "path": "skills/ui-ux-design/ui-ux-pro-max"
   },
   {
     "name": "websocket-engineer",
