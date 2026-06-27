@@ -51,7 +51,8 @@
 | owasp-security | 1.0.0 | [Filippo De Silva](https://github.com/FilippoDeSilva) | Implement secure coding practices following OWASP Top 10. Use when preventing se |
 | pentest | 1.0.0 | [Filippo De Silva](https://github.com/FilippoDeSilva) | PTES-aligned adversarial security audit for backend, frontend, and mobile applic |
 | ponytail | 1.0.0 | [Filippo De Silva](https://github.com/FilippoDeSilva) | Forces the laziest solution that actually works, simplest, shortest, most minima |
-| react-native | 1.0.0 | [Filippo De Silva](https://github.com/FilippoDeSilva) | Provides React Native performance optimization guidelines for FPS, TTI, bundle s |
+| react-native-design | 1.0.0 | [Filippo De Silva](https://github.com/FilippoDeSilva) | Master React Native styling, navigation, and Reanimated animations for cross-pla |
+| react-native-optimizations | 1.0.0 | [Filippo De Silva](https://github.com/FilippoDeSilva) | Provides React Native performance optimization guidelines for FPS, TTI, bundle s |
 | red-team | 1.0.0 | [Filippo De Silva](https://github.com/FilippoDeSilva) | Red Team persona for Business Logic and Auth manipulation. Generates and execute |
 | rust | 1.0.0 | [Filippo De Silva](https://github.com/FilippoDeSilva) | Guide for writing idiomatic Rust code based on Apollo GraphQLs best practices ha |
 | rust-async-patterns | 1.0.0 | [Filippo De Silva](https://github.com/FilippoDeSilva) | Master Rust async programming with Tokio, async traits, error handling, and conc |

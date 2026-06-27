@@ -984,7 +984,20 @@
     "path": "skills/ponytail"
   },
   {
-    "name": "react-native",
+    "name": "react-native-design",
+    "description": "Master React Native styling, navigation, and Reanimated animations for cross-platform mobile development. Use when building React Native apps, implementing navigation patterns, or creating performant animations.",
+    "license": "MIT",
+    "version": "1.0.0",
+    "author": "[Filippo De Silva](https://github.com/FilippoDeSilva)",
+    "tags": [
+      "reactnative",
+      "reactnavigation",
+      "reanimated"
+    ],
+    "path": "skills/react-natie/react-native-design"
+  },
+  {
+    "name": "react-native-optimizations",
     "description": "Provides React Native performance optimization guidelines for FPS, TTI, bundle size, memory leaks, re-renders, and animations. Applies to tasks involving Hermes optimization, JS thread blocking, bridge overhead, FlashList, native modules, or debugging jank and frame drops.",
     "license": "MIT",
     "version": "1.0.0",
@@ -996,7 +1009,7 @@
       "optimization",
       "profiling"
     ],
-    "path": "skills/react-native"
+    "path": "skills/react-natie/react-native-optimizations"
   },
   {
     "name": "red-team",
